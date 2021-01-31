@@ -1,5 +1,5 @@
 const youtubePlayer = require('ytdl-core');
-const memesClip = require('../Json/video_storage.json').memes[0];
+const memesClip = require('../Json/audio_storage.json').memes[0];
 
 /**
  * This function will return the clip associated with the given meme name.

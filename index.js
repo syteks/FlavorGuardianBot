@@ -14,9 +14,8 @@ const FlavorGuardianBot = new Discord.Client();
 // The AUTHENTICATION  TOKEN for the bot without this, the login will fail
 const TOKEN = process.env.BOT_TOKEN;
 
-// FlavorGuardianBot.login(TOKEN);
-
-FlavorGuardianBot.login(process.env.BOT_TOKEN_TEST);
+// For testing purposes, have a third bot to test the new feature while the main FlavorGuardian Bot is running
+FlavorGuardianBot.login(process.env.BOT_TOKEN_TEST || TOKEN);
 
 FlavorGuardianBot.on('ready', () => {
   console.info('FlavorGuardian successfully connected to the server!')
