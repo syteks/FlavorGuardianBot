@@ -1,6 +1,10 @@
 // Access our .env file
 require('dotenv').config();
 
+// Get our commands controller
+const Command = require('./Controllers/commands');
+
+
 // Used to connect and call the Discord API
 const Discord = require('discord.js');
 
@@ -17,6 +21,8 @@ FlavorGuardianBot.login(process.env.BOT_TOKEN_TEST);
 FlavorGuardianBot.on('ready', () => {
   console.info('FlavorGuardian successfully connected to the server!')
 });
+
+FlavorGuardianBot.on('message', Command.manageCommand);
 
 /**
  * This is an example of how to create a command that the bot will listen to.
