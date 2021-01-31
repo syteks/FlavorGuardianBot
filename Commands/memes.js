@@ -5,7 +5,7 @@ const memesClip = require('../Json/audio_storage.json').memes[0];
  * This function will return the clip associated with the given meme name.
  * If the clip is not found in the list, returns empty string.
  * @param clip
- * @returns string If the string is empty it means
+ * @returns string If the string is empty it means that the clip was not found in the lsit
  */
 const findClip = clip => {
     // If we do not find the given clip in the clip .json than we return an empty string
@@ -14,6 +14,21 @@ const findClip = clip => {
     }
 
     return memesClip[clip].clip || '';
+}
+
+/**
+ * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
+ * @returns string Returns a random clip found in the list
+ */
+const randomClip = () => {
+    // Get all the keys (memes clips)
+    let memesClipKeys = Object.keys(memesClip);
+
+    // Get a random number between 0 and the amount of clip found in the .json file
+    let randomClipNumber = Math.floor(Math.random() * memesClipKeys.length);
+
+    // If no clip was found at the random generated number we simply output the first element of the clip list
+    return memesClip[memesClipKeys[randomClipNumber]].clip;
 }
 
 module.exports = {
@@ -29,9 +44,10 @@ module.exports = {
             return;
         }
 
-        // Try to find the clip in the storage, if nothing is found we simply stop the command process
-        let clipUrl = findClip(memeClip);
+        // If the passed memeClip (parameters) is empty we randomize a clip from the list and play it else we find the given clip in the parameters
+        let clipUrl = memeClip.length === 0 ? randomClip() : findClip();
 
+        // If the clipUrl is empty that means it hasn't been found in the list.
         if (!clipUrl) {
             originalMessage.channel.send("The given clip was not found.");
             return;
