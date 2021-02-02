@@ -27,7 +27,7 @@ const randomClip = () => {
     // Get a random number between 0 and the amount of clip found in the .json file
     let randomClipNumber = Math.floor(Math.random() * memesClipKeys.length);
 
-    // If no clip was found at the random generated number we simply output the first element of the clip list
+    // Output the random clip
     return memesClip[memesClipKeys[randomClipNumber]].clip;
 }
 
