@@ -21,7 +21,7 @@ const findClip = clip => {
  * @returns string Returns a random clip found in the list
  */
 const randomClip = () => {
-    // Get all the keys (memes clips)
+    // Get all the keys in the meme clips list
     let memesClipKeys = Object.keys(memesClip);
 
     // Get a random number between 0 and the amount of clip found in the .json file
@@ -38,25 +38,23 @@ module.exports = {
      * @param memeClip
      */
     'memes' : (originalMessage, memeClip) => {
-        // If the member is not in a channel, we can't play the clip/meme
         if (!originalMessage.member.voiceChannel) {
             originalMessage.channel.send("You must be in a channel.");
             return;
         }
 
         // If the passed memeClip (parameters) is empty we randomize a clip from the list and play it else we find the given clip in the parameters
-        let clipUrl = memeClip.length === 0 ? randomClip() : findClip();
+        let clipUrl = memeClip.length === 0 ? randomClip() : findClip(memeClip);
 
-        // If the clipUrl is empty that means it hasn't been found in the list.
         if (!clipUrl) {
             originalMessage.channel.send("The given clip was not found.");
             return;
         }
 
-        // Play the clip url
+        // This is where the clip will be played
         if (!originalMessage.guild.voiceConnection) {
             originalMessage.member.voiceChannel.join().then(connection => {
-                // Keep the connection in a dispatcher to know when the bot is done outputing stream
+                // Keep the connection in a dispatcher to know when the bot is done outputting stream
                 let dispatcher = connection.playStream(youtubePlayer(clipUrl, {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
 
                 // When the audio is done playing we want to disconnect the bot
