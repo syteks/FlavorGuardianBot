@@ -1,11 +1,5 @@
-// Get the environnement variables
+// Get the environment variables
 require('dotenv').config();
-
-// Get the avaiableCommands that contains all our command required files
-const COMMANDS = require('../Helpers/availableCommands');
-
-const memesCommand = require('../Commands/memes');
-
 
 module.exports = {
     /**
@@ -21,18 +15,18 @@ module.exports = {
             return;
         }
 
-        // Get the command
+        // Separate the user command and the command parameters.
         let userInput = msg.content.substr(1).split(" ");
 
         // The command given by the user
         let command = userInput[0] || '';
 
-        // If the next character is empty, that means that was not an intended command
+        // If the next character is empty, that means that was not an intended bot command
         if (!command) {
             return;
         }
 
-        // Everything that is after the first index, is considered a parameter and we can have multiple parameters
+        // Everything that is after the first index, is considered as a parameter and we can have multiple parameters
         let commandParameters = userInput.splice(1);
 
         // Get the command function associated with the given command
@@ -48,7 +42,6 @@ module.exports = {
             // By default we will play the memes command and taking the first parameter as the clip that we want to play
             let memes = availableCommand['memes'];
 
-            // By default function memes will check if the given command is a valid audio clip found in the json
             memes(msg, command)
         }
     }
