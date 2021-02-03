@@ -24,6 +24,15 @@
         "Andrew H."
     ],
     "license": "ISC",
+    "dependencies": {
+        "discord.js": "^11.6.4",
+        "dotenv": "^8.2.0",
+        "ffmpeg-static": "^4.1.1",
+        "inversify": "^5.0.1",
+        "opusscript": "0.0.7",
+        "reflect-metadata": "^0.1.13",
+        "ytdl-core": "^4.4.5"
+    },
     "devDependencies": {
         "@types/node": "^14.14.16",
         "ts-loader": "^8.0.12",
@@ -32,12 +41,5 @@
         "webpack-cli": "^4.3.0",
         "webpack-node-externals": "^2.5.2",
         "nodemon-webpack-plugin": "^4.3.2"
-    },
-    "dependencies": {
-        "discord.js": "^11.6.4",
-        "dotenv": "^8.2.0",
-        "opusscript": "0.0.7",
-        "ytdl-core": "^4.4.5",
-        "ffmpeg-static": "^4.1.1"
     }
 }
