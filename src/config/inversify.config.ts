@@ -5,6 +5,7 @@ import { Bot } from "../class/bot";
 import { Client } from "discord.js";
 import { MessageResponder } from "../services/message-responder";
 import { PingFinder } from "../services/commands/ping-finder";
+import { Memes } from "../services/commands/memes";
 
 let container = new Container();
 
@@ -13,5 +14,6 @@ container.bind<Client>(TYPES.Client).toConstantValue(new Client());
 container.bind<string>(TYPES.Token).toConstantValue(process.env.BOT_TOKEN || '');
 container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).inSingletonScope();
 container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
+container.bind<Memes>(TYPES.Memes).to(Memes).inSingletonScope();
 
 export default container;
