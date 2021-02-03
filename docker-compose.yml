@@ -1,0 +1,22 @@
+version: "3.5"
+services:
+  bot:
+    container_name: flavor-guardian
+    restart: unless-stopped
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file: .env
+    environment:
+      BOT_TOKEN: $BOT_TOKEN
+      BOT_COMMAND_PREFIX: $BOT_COMMAND_PREFIX
+    volumes:
+      - ./src:/usr/src/app/src
+    networks:
+      - bot-network
+    ports:
+      - 1337:1337
+
+networks:
+  bot-network:
+    driver: bridge
