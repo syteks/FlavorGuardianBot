@@ -10,8 +10,14 @@ The ultimate Flavor Guardian
 - __environment__
 > #### To install the dependecies and the libraries
 > ``npm install`` or ``npm i``
-> #### To run the bot (basic run or with a watcher)
-> ``node index.js`` or ``nodemon index.js``
+> #### Build Dev
+> ``webpack --mode development``
+> #### Run dev
+> ``webpack --watch``
+> #### Build prod
+> ``webpack --mode production``
+> #### Run prod
+> ``node ./dist/index.js``
 
 
 ## Technologies Used
