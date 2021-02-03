@@ -18,6 +18,10 @@ The ultimate Flavor Guardian
 > ``webpack --mode production``
 > #### Run prod
 > ``node ./dist/index.js``
+> #### Docker set up the environnement with one command and build it
+> ``docker-compose up --build``
+> #### Docker shutdown
+> ``docker-compose down``
 
 
 ## Technologies Used
