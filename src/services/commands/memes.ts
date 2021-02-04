@@ -11,7 +11,7 @@ export class Memes {
      * 
      * @todo: Change regex to take one param (ex: ~memes meat)
      */
-    private regexp = 'memes';
+    public readonly regexp = 'memes';
 
     /**
      * All the memes !
@@ -20,38 +20,33 @@ export class Memes {
 
     /**
      * Instantiate the message responder
-     * 
-     * @param pingFinder 
      */
     constructor() {
         this.memes = memes;
     }
 
     /**
-     * Is this a ping command ?
-     * 
-     * @param stringToSearch 
-     * @return boolean
-     */
-    public isMeme(stringToSearch: string): boolean {
-        return stringToSearch.search(this.regexp) >= 0;
-    }
-
-    /**
-     * Ping action
-     * 
+     * This will find the clip that we want to play for the user.
+     * If it doesn't find the given clip name in the list, it will warn the user.
+     *
      * @param message
-     * @return Promise<Message | Message[]> 
+     * @param parameters
+     * @return Promise<Message | Message[]>
      */
-    public action(message: Message): Promise<Message | Message[]> {
+    public action(message: Message, parameters: string | string[]): Promise<Message | Message[]> {
         // Make sure the user is in a channel
         if (!message.member.voiceChannel) {
             return message.reply("You must be in a channel.");
         }
 
-        // Try to find the clip
-        // @todo: 
-        const meme = this.findClip(this.memes, 'meat');
+        // Declare a variable that will be used to play the clip by given keys or a random clip.
+        let meme: any;
+
+        if (!Array.isArray(parameters)) {
+            meme = parameters;
+        } else {
+            meme = parameters.length === 0 ? this.randomClip() : this.findClip(parameters[0] || '');
+        }
 
         // Make sure the clip is found
         if (!meme) {
@@ -62,41 +57,41 @@ export class Memes {
         if (!message.guild.voiceConnection) {
             message.member.voiceChannel.join().then((connection: any) => {
                 // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                let dispatcher = connection.playStream(youtubePlayer(meme.clip, {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
+                let dispatcher = connection.playStream(youtubePlayer(meme.clip || meme, {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
 
                 // When the audio is done playing we want to disconnect the bot
                 dispatcher.on("end", function () {
                     connection.disconnect();
                 });
-
             })
             .catch((_error: any) => {
                 // @todo: catch errors and do something about it!
             });
         }
 
-        return message.reply('Could not join channel.');
+        return Promise.resolve(message);
     }
 
     /**
      * This function will return the clip associated with the given meme name.
      * If the clip is not found in the list, returns empty string.
-     * @param clip
-     * @returns string If the string is empty it means that the clip was not found in the lsit
+     *
+     * @param key
+     * @private
      */
-    private findClip = (memes: Meme[], key: string) => {
-        return memes.find(meme => meme.key === key);
+    public findClip(key: string): Meme | null {
+        return this.memes.find(meme => meme.key === key) || null;
     }
 
     /**
      * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
      * @returns string Returns a random clip found in the list
      */
-    // private randomClip = (memes: Meme[]) => {
-    //     // Get a random number between 0 and the amount of clip found in the .json file
-    //     let randomClipNumber: number = Math.floor(Math.random() * memes.length);
+    private randomClip(): Meme {
+        // Get a random number between 0 and the amount of clip found in the .json file
+        let randomClipNumber: number = Math.floor(Math.random() * memes.length);
 
-    //     // Output the random clip
-    //     return memes[randomClipNumber].clip;
-    // }
+        // Output the random clip
+        return this.memes[randomClipNumber];
+    }
 }

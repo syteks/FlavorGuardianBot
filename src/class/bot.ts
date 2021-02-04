@@ -48,7 +48,7 @@ export class Bot {
     public listen(): Promise<string> {
         this.client.on('message', (message: Message) => {
             // Ignore the bot and message without the command prefix
-            if (message.author.bot || !message.content.includes(process.env.BOT_COMMAND_PREFIX || '~')) {
+            if (message.author.bot || !message.content.startsWith(process.env.BOT_COMMAND_PREFIX || '~')) {
                 return;
             }
 

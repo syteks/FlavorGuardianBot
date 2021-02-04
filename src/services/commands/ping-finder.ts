@@ -6,25 +6,17 @@ export class PingFinder {
     /**
      * Regex for this command
      */
-    private regexp = 'ping';
-
-    /**
-     * Is this a ping command ?
-     * 
-     * @param stringToSearch 
-     * @return boolean
-     */
-    public isPing(stringToSearch: string): boolean {
-        return stringToSearch.search(this.regexp) >= 0;
-    }
+    public readonly regexp = 'ping';
 
     /**
      * Ping action
-     * 
+     *
      * @param message
-     * @return Promise<Message | Message[]> 
+     * @param parameters
+     * @return Promise<Message | Message[]>
      */
-    public action(message: Message): Promise<Message | Message[]> {
+    public action(message: Message, parameters?: string | string[]): Promise<Message | Message[]> {
+        console.log(parameters);
         return message.reply('pong!');
     }
 }
