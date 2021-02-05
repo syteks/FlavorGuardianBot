@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import {Message, VoiceConnection} from "discord.js";
 import youtubePlayer from "ytdl-core";
 import { injectable } from "inversify";
 import memes from "../../storage/audio.json";
@@ -8,8 +8,6 @@ import { Meme } from "../../interfaces";
 export class Memes {
     /**
      * Regex for this command
-     * 
-     * @todo: Change regex to take one param (ex: ~memes meat)
      */
     public readonly regexp = 'memes';
 
@@ -40,12 +38,16 @@ export class Memes {
         }
 
         // Declare a variable that will be used to play the clip by given keys or a random clip.
-        let meme: any;
+        let meme: string | null;
 
         if (!Array.isArray(parameters)) {
             meme = parameters;
         } else {
-            meme = parameters.length === 0 ? this.randomClip() : this.findClip(parameters[0] || '');
+            if (parameters.length === 0) {
+                meme = this.randomClip();
+            } else {
+                meme = this.findClip(parameters[0] || '');
+            }
         }
 
         // Make sure the clip is found
@@ -55,9 +57,9 @@ export class Memes {
 
         // This is where the clip will be played
         if (!message.guild.voiceConnection) {
-            message.member.voiceChannel.join().then((connection: any) => {
+            message.member.voiceChannel.join().then((connection: VoiceConnection) => {
                 // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                let dispatcher = connection.playStream(youtubePlayer(meme.clip || meme, {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
+                let dispatcher = connection.playStream(youtubePlayer(meme || '', {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
 
                 // When the audio is done playing we want to disconnect the bot
                 dispatcher.on("end", function () {
@@ -79,19 +81,19 @@ export class Memes {
      * @param key
      * @private
      */
-    public findClip(key: string): Meme | null {
-        return this.memes.find(meme => meme.key === key) || null;
+    public findClip(key: string): string | null {
+        return this.memes.find(meme => meme.key === key)?.clip || null;
     }
 
     /**
      * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
      * @returns string Returns a random clip found in the list
      */
-    private randomClip(): Meme {
+    private randomClip(): string {
         // Get a random number between 0 and the amount of clip found in the .json file
         let randomClipNumber: number = Math.floor(Math.random() * memes.length);
 
         // Output the random clip
-        return this.memes[randomClipNumber];
+        return this.memes[randomClipNumber].clip;
     }
 }
