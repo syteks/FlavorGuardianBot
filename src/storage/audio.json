@@ -1,238 +1,306 @@
-{
-  "memes": [
+[
     {
-      "meat": {
+        "key": "meat",
         "clip": "https://www.youtube.com/watch?v=Acjf66Qdj2U"
-      },
-      "nice": {
+    },
+    {
+        "key": "nice",
         "clip": "https://www.youtube.com/watch?v=-mMhKYJFOnQ"
-      },
-      "tasty": {
+    },
+    {
+        "key": "tasty",
         "clip": "https://www.youtube.com/watch?v=-FrpuPLYnvY"
-      },
-      "wow": {
+    },
+    {
+        "key": "nice",
         "clip": "https://www.youtube.com/watch?v=LYkg-B6f5iA"
-      },
-      "wednesday": {
+    },
+    {
+        "key": "wednesday",
         "clip": "https://www.youtube.com/watch?v=du-TY1GUFGk"
-      },
-      "reeeee": {
+    },
+    {
+        "key": "reeeee",
         "clip": "https://www.youtube.com/watch?v=ptXsXrMs5No"
-      },
-      "damage": {
+    },
+    {
+        "key": "damage",
         "clip": "https://www.youtube.com/watch?v=N36bCj5_Yrg"
-      },
-      "stop-it": {
+    },
+    {
+        "key": "stop-it",
         "clip": "https://www.youtube.com/watch?v=l60MnDJklnM"
-      },
-      "these-nuts": {
+    },
+    {
+        "key": "these-nuts",
         "clip": "https://www.youtube.com/watch?v=66I78hXXwvk"
-      },
-      "commet": {
+    },
+    {
+        "key": "commet",
         "clip": "https://www.youtube.com/watc?v=PhqSrw62xHM"
-      },
-      "sad": {
+    },
+    {
+        "key": "sad",
         "clip": "https://www.youtube.com/watch?v=7ODcC5z6Ca0"
-      },
-      "illuminati": {
+    },
+    {
+        "key": "illuminati",
         "clip": "https://www.youtube.com/watch?v=sahAbxq8WPw"
-      },
-      "trickshot": {
+    },
+    {
+        "key": "trickshot",
         "clip": "https://www.youtube.com/watch?v=ozuRmtWQGMU"
-      },
-      "mad": {
+    },
+    {
+        "key": "mad",
         "clip": "https://www.youtube.com/watch?v=ICGoPyAp0Hw"
-      },
-      "fast": {
+    },
+    {
+        "key": "fast",
         "clip": "https://www.youtube.com/watch?v=fmRWQV75Kgc"
-      },
-      "kitty": {
+    },
+    {
+        "key": "kitty",
         "clip": "https://www.youtube.com/watch?v=CgSNA4xtlBU"
-      },
-      "noscoped": {
+    },
+    {
+        "key": "noscoped",
         "clip": "https://www.youtube.com/watch?v=yoMYwZT19Do"
-      },
-      "nope": {
+    },
+    {
+        "key": "nope",
         "clip": "https://www.youtube.com/watch?v=3Y7aWLpuxA4"
-      },
-      "realy": {
+    },
+    {
+        "key": "realy",
         "clip": "https://www.youtube.com/watch?v=rfsqEO-WQHc"
-      },
-      "shutup": {
+    },
+    {
+        "key": "shutup",
         "clip": "https://www.youtube.com/watch?v=AqcyQItOL9g"
-      },
-      "tadaah": {
+    },
+    {
+        "key": "tadaah",
         "clip": "https://www.youtube.com/watch?v=jLtbFWJm9_M"
-      },
-      "gotcha": {
+    },
+    {
+        "key": "gotcha",
         "clip": "https://www.youtube.com/watch?v=H7O17O1t-9g"
-      },
-      "heyyeyaaeyaaaeyaeyaa": {
+    },
+    {
+        "key": "heyyeyaaeyaaaeyaeyaa",
         "clip": "https://www.youtube.com/watch?v=ZZ5LpwO-An4"
-      },
-      "nani": {
+    },
+    {
+        "key": "nani",
         "clip": "https://www.youtube.com/watch?v=tD2sIYKV6oY"
-      },
-      "yeeee": {
+    },
+    {
+        "key": "yeeee",
         "clip": "https://www.youtube.com/watch?v=q6EoRBvdVPQ"
-      },
-      "yeeee-buster": {
+    },
+    {
+        "key": "yeeee-buster",
         "clip": "https://www.youtube.com/watch?v=057ra2g75tg"
-      },
-      "computer": {
+    },
+    {
+        "key": "computer",
         "clip": "https://www.youtube.com/watch?v=WNmCm4oyrkY"
-      },
-      "guacamole": {
+    },
+    {
+        "key": "guacamole",
         "clip": "https://www.youtube.com/watch?v=AnqPfbb0GlA"
-      },
-      "parents-suck": {
+    },
+    {
+        "key": "parents-suck",
         "clip": "https://www.youtube.com/watch?v=eDxa2tmbhSg"
-      },
-      "420": {
+    },
+    {
+        "key": "420",
         "clip": "https://www.youtube.com/watch?v=shCYA2J-De8"
-      },
-      "jesus": {
+    },
+    {
+        "key": "jesus",
         "clip": "https://www.youtube.com/watch?v=Kppx4bzfAaE"
-      },
-      "ear-rape": {
+    },
+    {
+        "key": "ear-rape",
         "clip": "https://www.youtube.com/watch?v=Jnim1ouN8o0"
-      },
-      "boomer": {
+    },
+    {
+        "key": "boomer",
         "clip": "https://www.youtube.com/watch?v=ttBg7uIrJIg"
-      },
-      "mmm": {
+    },
+    {
+        "key": "mmm",
         "clip": "https://www.youtube.com/watch?v=kjFxgISmzto"
-      },
-      "thicc": {
+    },
+    {
+        "key": "thicc",
         "clip": "https://www.youtube.com/watch?v=ozaK4NIl_GY"
-      },
-      "erect": {
+    },
+    {
+        "key": "erect",
         "clip": "https://www.youtube.com/watch?v=pusZXECS0mM"
-      },
-      "moist-ear-rape": {
+    },
+    {
+        "key": "moist-ear-rape",
         "clip": "https://www.youtube.com/watch?v=WvImwlSu9Zs"
-      },
-      "moist": {
+    },
+    {
+        "key": "moist",
         "clip": "https://www.youtube.com/watch?v=LAKFv8AK8Oc"
-      },
-      "knee-gears": {
+    },
+    {
+        "key": "knee-gears",
         "clip": "https://www.youtube.com/watch?v=-dGsaExqG5M"
-      },
-      "racist": {
+    },
+    {
+        "key": "racist",
         "clip": "https://www.youtube.com/watch?v=zyu2jAD6sdo"
-      },
-      "jail": {
+    },
+    {
+        "key": "jail",
         "clip": "https://www.youtube.com/watch?v=eiyfwZVAzGw"
-      },
-      "slut-dragon": {
+    },
+    {
+        "key": "slut-dragon",
         "clip": "https://www.youtube.com/watch?v=6iHQAnbJWCw"
-      },
-      "trash": {
+    },
+    {
+        "key": "trash",
         "clip": "https://www.youtube.com/watch?v=YX7D3O_UtXs"
-      },
-      "barbies": {
+    },
+    {
+        "key": "barbies",
         "clip": "https://www.youtube.com/watch?v=6Jh9gVP_pp8"
-      },
-      "squish": {
+    },
+    {
+        "key": "squish",
         "clip": "https://www.youtube.com/watch?v=5jKZ9KGtee0"
-      },
-      "meow": {
+    },
+    {
+        "key": "meow",
         "clip": "https://www.youtube.com/watch?v=SHq7NRYUS-Q"
-      },
-      "why": {
+    },
+    {
+        "key": "why",
         "clip": "https://www.youtube.com/watch?v=TbArDY2iWSw"
-      },
-      "why-you-running": {
+    },
+    {
+        "key": "why-you-running",
         "clip": "https://www.youtube.com/watch?v=W6oQUDFV2C0"
-      },
-      "hello-there": {
+    },
+    {
+        "key": "hello-there",
         "clip": "https://www.youtube.com/watch?v=Uo0o5slEqIE"
-      },
-      "elbow": {
+    },
+    {
+        "key": "elbow",
         "clip": "https://www.youtube.com/watch?v=b-B5y_I-1Rc"
-      },
-      "pedo": {
+    },
+    {
+        "key": "pedo",
         "clip": "https://www.youtube.com/watch?v=FyH7QThXgPE"
-      },
-      "baaam": {
+    },
+    {
+        "key": "baaam",
         "clip": "https://www.youtube.com/watch?v=Z4sKg18lTqw"
-      },
-      "liquor": {
+    },
+    {
+        "key": "liquor",
         "clip": "https://www.youtube.com/watch?v=zWCBghizQUs"
-      },
-      "croissant": {
+    },
+    {
+        "key": "croissant",
         "clip": "https://www.youtube.com/watch?v=hRFUZBXOWZI"
-      },
-      "bruuuh": {
+    },
+    {
+        "key": "bruuuh",
         "clip": "https://www.youtube.com/watch?v=2ZIpFytCSVc"
-      },
-      "bruuuh-japan": {
+    },
+    {
+        "key": "bruuuh-japan",
         "clip": "https://www.youtube.com/watch?v=ufQ8FaJ08WU"
-      },
-      "fuck-off": {
+    },
+    {
+        "key": "wednesday",
         "clip": "https://www.youtube.com/watch?v=Rv7GT9HsJZc"
-      },
-      "universal": {
+    },
+    {
+        "key": "universal",
         "clip": "https://www.youtube.com/watch?v=8ChJC_Xhtog"
-      },
-      "uwotm8": {
+    },
+    {
+        "key": "uwotm8",
         "clip": "https://www.youtube.com/watch?v=5AuKTk3S0Ko"
-      },
-      "degenerate": {
+    },
+    {
+        "key": "degenerate",
         "clip": "https://www.youtube.com/watch?v=KAIQ68snVMw"
-      },
-      "genders": {
+    },
+    {
+        "key": "genders",
         "clip": "https://www.youtube.com/watch?v=Had-U-78JbU"
-      },
-      "bigshaq": {
+    },
+    {
+        "key": "bigshaq",
         "clip": "https://www.youtube.com/watch?v=-kTeRGNWr8k"
-      },
-      "bitconnect": {
+    },
+    {
+        "key": "bitconnect",
         "clip": "https://www.youtube.com/watch?v=yIL9wLxG01M"
-      },
-      "developers": {
+    },
+    {
+        "key": "developers",
         "clip": "https://www.youtube.com/watch?v=Vhh_GeBPOhs"
-      },
-      "fuck-off-2": {
+    },
+    {
+        "key": "fuck-off-2",
         "clip": "https://www.youtube.com/watch?v=f9P9ybBYySY"
-      },
-      "senate": {
+    },
+    {
+        "key": "senate",
         "clip": "https://www.youtube.com/watch?v=goj1IJUlEJA"
-      },
-      "uwu": {
+    },
+    {
+        "key": "uwu",
         "clip": "https://www.youtube.com/watch?v=0_gtppkzkSw"
-      },
-      "daddy": {
-        "local": true,
-        "clip": "./storage/videos/daddy.mp4"
-      },
-      "omg-wow": {
+    },
+    {
+        "key": "omg-wow",
         "clip": "https://www.youtube.com/watch?v=H46FRRvb-9o"
-      },
-      "pufferfish": {
+    },
+    {
+        "key": "pufferfish",
         "clip": "https://www.youtube.com/watch?v=ZqBqCsiMbls"
-      },
-      "ah-gay": {
+    },
+    {
+        "key": "ah-gay",
         "clip": "https://www.youtube.com/watch?v=PVrYhL-jv-c"
-      },
-      "do-not-play-this-one-i-warned-you": {
-        "clip": "https://www.youtube.com/watch?v=EvjS2KJlu-I"
-      },
-      "grapefruit": {
+    },
+    {
+        "key": "grapefruit",
         "clip": "https://www.youtube.com/watch?v=RJqE_1rWNz0"
-      },
-      "rawr-xd": {
+    },
+    {
+        "key": "rawr-xd",
         "clip": "https://www.youtube.com/watch?v=UclpBKu5qWI"
-      },
-      "google": {
+    },
+    {
+        "key": "google",
         "clip": "https://www.youtube.com/watch?v=R9VvNR2QwlQ"
-      },
-      "crab-crab-crab": {
+    },
+    {
+        "key": "crab-crab-crab",
         "clip": "https://www.youtube.com/watch?v=bGomsBEtOE4"
-      },
-      "coton-ouate": {
+    },
+    {
+        "key": "coton-ouate",
         "clip": "https://www.youtube.com/watch?v=_whvVXX0hCk&ab_channel=BleuJeansBleu"
-      }
+    },
+    {
+        "key": "opossum",
+        "clip": "https://www.youtube.com/watch?v=7LU7FP8jhGE"
     }
-  ]
-}
+]
