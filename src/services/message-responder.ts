@@ -76,7 +76,7 @@ export class MessageResponder {
             return Promise.resolve(message);
         }
 
-        command = this.availableCommands.find(x => MessageResponder.isIntendedCommand(originalCommand, x.regexp)) || null;
+        command = this.availableCommands.find(availableCommand => MessageResponder.isIntendedCommand(originalCommand, availableCommand.regexp)) || null;
 
         // If the originalCommand is not found, try to check that the command is maybe a clip key
         if (command) {
