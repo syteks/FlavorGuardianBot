@@ -297,10 +297,18 @@
     },
     {
         "key": "coton-ouate",
-        "clip": "https://www.youtube.com/watch?v=_whvVXX0hCk&ab_channel=BleuJeansBleu"
+        "clip": "https://www.youtube.com/watch?v=_whvVXX0hCk"
     },
     {
         "key": "opossum",
         "clip": "https://www.youtube.com/watch?v=7LU7FP8jhGE"
+    },
+    {
+        "key": "gorbage",
+        "clip": "https://www.youtube.com/watch?v=cfiPB8omuQQ"
+    },
+    {
+        "key": "nutrition",
+        "clip": "https://www.youtube.com/watch?v=6rE8Um6h4ow"
     }
 ]

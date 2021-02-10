@@ -4,6 +4,7 @@ import { Memes } from "./commands/memes";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { CommandObject } from "../interfaces";
+import { MemeService } from "./meme-service";
 
 @injectable()
 export class MessageResponder {
@@ -17,13 +18,6 @@ export class MessageResponder {
     private availableCommands: Array<CommandObject>;
 
     /**
-     * This variable will be used to check if the command given is a valid clip found in the storage
-     *
-     * @private Memes
-     */
-    private memes: Memes
-
-    /**
      * Instantiate the message responder
      *
      * @param pingFinder
@@ -31,12 +25,19 @@ export class MessageResponder {
      */
     constructor(
         @inject(TYPES.PingFinder) pingFinder: PingFinder,
-        @inject(TYPES.Memes) memes: Memes
+        @inject(TYPES.MemeService) private memeService: MemeService,
+        /**
+         * This variable will be used to check if the command given is a valid clip found in the storage
+         *
+         * @private Memes
+         */
+        @inject(TYPES.Memes) private memes: Memes
     ) {
         this.availableCommands = [
             pingFinder,
             memes
         ];
+        
         this.memes = memes;
     }
 
@@ -63,7 +64,7 @@ export class MessageResponder {
             originalCommand: string,
             commandParameters: string[],
             command: CommandObject | null;
-
+            
         // User input, it contains the command and the associated parameters.
         userInput = message.content.substr(1).split(" ");
 

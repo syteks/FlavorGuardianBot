@@ -11,4 +11,6 @@ export const TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
     Memes: Symbol("Memes"),
+    MemeService: Symbol("MemeService"),
+    MongoDBClient: Symbol('MongoDBClient'),
 };

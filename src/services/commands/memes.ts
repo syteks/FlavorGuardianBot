@@ -2,7 +2,7 @@ import {Message, VoiceConnection} from "discord.js";
 import youtubePlayer from "ytdl-core";
 import { injectable } from "inversify";
 import memes from "../../storage/audio.json";
-import { Meme } from "../../interfaces";
+import { Meme } from "../../models/meme";
 
 @injectable()
 export class Memes {
