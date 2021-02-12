@@ -1,8 +1,8 @@
-import {Message, VoiceConnection} from "discord.js";
-import youtubePlayer from "ytdl-core";
+import {Message, StreamDispatcher, VoiceConnection} from "discord.js";
 import { injectable } from "inversify";
 import memes from "../../storage/audio.json";
-import { Meme } from "../../interfaces";
+import {Meme} from "../../interfaces";
+import {AudioPlayer} from "../../class/audio-player";
 
 @injectable()
 export class Memes {
@@ -55,20 +55,41 @@ export class Memes {
             return message.reply("The given clip was not found.");
         }
 
+        // Checks the validity of the url and the content, before making the bot join the channel.
+        // If the video or the url is not, outputs a user friendly message.
+        let clipUrl: string;
+
+        clipUrl = meme || '';
+
+        let audioPlayer: AudioPlayer;
+
+        audioPlayer = new AudioPlayer();
+
         // This is where the clip will be played
         if (!message.guild.voiceConnection) {
-            message.member.voiceChannel.join().then((connection: VoiceConnection) => {
-                // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                let dispatcher = connection.playStream(youtubePlayer(meme || '', {filter: "audioonly", quality: "highestaudio"}), {volume: 0.25});
+            audioPlayer.processAudioUrl(clipUrl)
+                .then(audioClip => {
+                    if (audioClip.audioTitle) {
+                        message.member.voiceChannel.join().then((connection: VoiceConnection) => {
+                            // The dispatcher that will play the audio and close the connection when it done
+                            let dispatcher: StreamDispatcher;
 
-                // When the audio is done playing we want to disconnect the bot
-                dispatcher.on("end", function () {
-                    connection.disconnect();
+                            // Keep the connection in a dispatcher to know when the bot is done outputting stream
+                            dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
+
+                            // When the audio is done playing we want to disconnect the bot
+                            dispatcher.on("end", function () {
+                                connection.disconnect();
+                            });
+                        })
+                            .catch((_error: any) => {
+                                // @todo: catch errors and do something about it!
+                            });
+                    }
+                })
+                .catch((_err: any) => {
+                    return message.reply(_err);
                 });
-            })
-            .catch((_error: any) => {
-                // @todo: catch errors and do something about it!
-            });
         }
 
         return Promise.resolve(message);
