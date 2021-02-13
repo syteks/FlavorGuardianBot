@@ -4,6 +4,7 @@ import { Memes } from "./commands/memes";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { CommandObject } from "../interfaces";
+import {AudioPlayer} from "../class/audio-player";
 
 @injectable()
 export class MessageResponder {
@@ -33,6 +34,9 @@ export class MessageResponder {
         @inject(TYPES.PingFinder) pingFinder: PingFinder,
         @inject(TYPES.Memes) memes: Memes
     ) {
+        // Initialize a singleton instance of a audio player, that will be used as a jukebox in the other files.
+        AudioPlayer.getAudioPlayer();
+
         this.availableCommands = [
             pingFinder,
             memes

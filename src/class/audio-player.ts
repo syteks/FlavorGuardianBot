@@ -3,27 +3,54 @@ import {Readable} from "stream";
 import {AudioClip} from "../interfaces";
 import youtubePlayer, {videoInfo} from "ytdl-core";
 
-
 @injectable()
 export class AudioPlayer {
+    private static instance: AudioPlayer;
     /**
      * The audio clip that will be returned, to play.
      *
-     * @var audioClip
+     * @var AudioClip|null
      */
-    private audioClip: AudioClip | null;
+    private currentAudioClip: AudioClip | null;
 
     /**
-     * Setup
+     * This is the audio clip q that we can add a audio clip too.
      *
-     * @param audioUrl
+     * @var Array<AudioClip>|null
+     */
+    private listAudioClip: Array<AudioClip> | null;
+
+    /**
+     * Setup the audio clip
      */
     constructor() {
-        this.audioClip = null;
+        this.currentAudioClip = null;
+        this.listAudioClip = null;
     }
 
+    /**
+     * This is the class function to get the class.
+     * Since the class is a singleton we want
+     *
+     * @returns AudioPlayer
+     */
+    public static getAudioPlayer(): AudioPlayer {
+        if (!AudioPlayer.instance) {
+            AudioPlayer.instance = new AudioPlayer();
+        }
+
+        return AudioPlayer.instance;
+    }
+
+    /**
+     * We process the given url and transform it into a AudioClip that we can
+     *
+     * @param {string} audioUrl
+     *
+     * @returns {Promise<AudioClip>}
+     */
     public async processAudioUrl(audioUrl: string): Promise<AudioClip> {
-        try{
+        try {
             let audioBasicInfo: videoInfo,
             audioClip: AudioClip;
             audioBasicInfo = await youtubePlayer.getInfo(audioUrl);
@@ -39,7 +66,7 @@ export class AudioPlayer {
                     return Promise.reject('The audio URL is not valid or doesn\'t');
                 });
 
-                this.audioClip = audioClip;
+                this.currentAudioClip = audioClip;
 
                 return Promise.resolve(audioClip);
             } else {
@@ -50,11 +77,30 @@ export class AudioPlayer {
         }
     }
 
+    /**
+     * We get the audioTitle from the audioClip.
+     *
+     * @returns {string|null}
+     */
     public getAudioTitle(): string | null {
-        return this.audioClip?.audioTitle || null;
+        return this.currentAudioClip?.audioTitle || null;
     }
 
+    /**
+     * Get the audioClip
+     *
+     * @returns {Readable|null}
+     */
     public getAudioClip(): Readable | null {
-        return this.audioClip?.audioClip || null;
+        return this.currentAudioClip?.audioClip || null;
+    }
+
+    /**
+     * Get the AudioClips in the list
+     * 
+     * @returns Array<AudioClip>|null
+     */
+    public getAudioClipList(): Array<AudioClip> | null {
+        return this.listAudioClip;
     }
 }

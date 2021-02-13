@@ -1,7 +1,7 @@
 import {Message, StreamDispatcher, VoiceConnection} from "discord.js";
 import { injectable } from "inversify";
 import memes from "../../storage/audio.json";
-import {Meme} from "../../interfaces";
+import {AudioClip, Meme} from "../../interfaces";
 import {AudioPlayer} from "../../class/audio-player";
 
 @injectable()
@@ -27,9 +27,9 @@ export class Memes {
      * This will find the clip that we want to play for the user.
      * If it doesn't find the given clip name in the list, it will warn the user.
      *
-     * @param message
-     * @param parameters
-     * @return Promise<Message | Message[]>
+     * @param {Message} message
+     * @param {string} parameters
+     * @returns {Promise<Message | Message[]>}
      */
     public action(message: Message, parameters: string | string[]): Promise<Message | Message[]> {
         // Make sure the user is in a channel
@@ -58,30 +58,29 @@ export class Memes {
         // Checks the validity of the url and the content, before making the bot join the channel.
         // If the video or the url is not, outputs a user friendly message.
         let clipUrl: string;
-
         clipUrl = meme || '';
-
-        let audioPlayer: AudioPlayer;
-
-        audioPlayer = new AudioPlayer();
 
         // This is where the clip will be played
         if (!message.guild.voiceConnection) {
-            audioPlayer.processAudioUrl(clipUrl)
-                .then(audioClip => {
+            AudioPlayer.getAudioPlayer().processAudioUrl(clipUrl)
+                .then((audioClip: AudioClip) => {
                     if (audioClip.audioTitle) {
-                        message.member.voiceChannel.join().then((connection: VoiceConnection) => {
-                            // The dispatcher that will play the audio and close the connection when it done
-                            let dispatcher: StreamDispatcher;
+                        message.member.voiceChannel.join()
+                            .then((connection: VoiceConnection) => {
+                                // The dispatcher that will play the audio and close the connection when it done
+                                let dispatcher: StreamDispatcher;
 
-                            // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                            dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
+                                // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
+                                message.reply(`Now playing : ${audioClip.audioTitle}`).then();
 
-                            // When the audio is done playing we want to disconnect the bot
-                            dispatcher.on("end", function () {
-                                connection.disconnect();
-                            });
-                        })
+                                // Keep the connection in a dispatcher to know when the bot is done outputting stream
+                                dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
+
+                                // When the audio is done playing we want to disconnect the bot
+                                dispatcher.on("end", function () {
+                                    connection.disconnect();
+                                });
+                            })
                             .catch((_error: any) => {
                                 // @todo: catch errors and do something about it!
                             });
@@ -99,8 +98,9 @@ export class Memes {
      * This function will return the clip associated with the given meme name.
      * If the clip is not found in the list, returns empty string.
      *
-     * @param key
-     * @private
+     * @param {string} key
+     *
+     * @returns {string|null} Returns the string or a null if the clip is not found
      */
     public findClip(key: string): string | null {
         return this.memes.find(meme => meme.key === key)?.clip || null;
@@ -108,7 +108,8 @@ export class Memes {
 
     /**
      * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
-     * @returns string Returns a random clip found in the list
+     *
+     * @returns {string} Returns a random clip found in the list
      */
     private randomClip(): string {
         // Get a random number between 0 and the amount of clip found in the .json file
