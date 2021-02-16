@@ -25,7 +25,7 @@ export class Memes {
     /**
      * Initialize the command class, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
      *
-     * @param audioPlayer This is the bot jukebox, used to process the url's and contains an array of our
+     * @param audioPlayer This is the bot jukebox, used to process the url's and contains an array of our audio playlist.
      */
     constructor(@inject(TYPES.AudioPlayer) audioPlayer: AudioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -64,13 +64,13 @@ export class Memes {
             return message.reply("The given clip was not found.");
         }
 
-        // Checks the validity of the url and the content, before making the bot join the channel.
-        // If the video or the url is not, outputs a user friendly message.
         let clipUrl: string;
+
         clipUrl = meme || '';
 
         // This is where the clip will be played
         if (!message.guild.voiceConnection) {
+            // Checks the validity of the url and the content, before making the bot join the channel.
             this.audioPlayer.processAudioUrl(clipUrl)
                 .then((audioClip: AudioClip) => {
                     if (audioClip.audioTitle) {

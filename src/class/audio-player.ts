@@ -13,7 +13,7 @@ export class AudioPlayer {
     private currentAudioClip: AudioClip | null;
 
     /**
-     * This is the audio clip q that we can add a audio clip too.
+     * This is the audio clip list that we can use as a Jukebox.
      *
      * @var Array<AudioClip>|null
      */
@@ -28,7 +28,7 @@ export class AudioPlayer {
     }
 
     /**
-     * We process the given url and transform it into a AudioClip that we can
+     * We process the given url and transform it into a AudioClip that we can check if the audio is valid before making the bot join.
      *
      * @param {string} audioUrl
      *
