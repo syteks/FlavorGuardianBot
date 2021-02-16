@@ -11,4 +11,5 @@ export const TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
     Memes: Symbol("Memes"),
+    AudioPlayer: Symbol("AudioPlayer"),
 };

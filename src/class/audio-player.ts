@@ -5,7 +5,6 @@ import youtubePlayer, {videoInfo} from "ytdl-core";
 
 @injectable()
 export class AudioPlayer {
-    private static instance: AudioPlayer;
     /**
      * The audio clip that will be returned, to play.
      *
@@ -26,20 +25,6 @@ export class AudioPlayer {
     constructor() {
         this.currentAudioClip = null;
         this.listAudioClip = null;
-    }
-
-    /**
-     * This is the class function to get the class.
-     * Since the class is a singleton we want
-     *
-     * @returns AudioPlayer
-     */
-    public static getAudioPlayer(): AudioPlayer {
-        if (!AudioPlayer.instance) {
-            AudioPlayer.instance = new AudioPlayer();
-        }
-
-        return AudioPlayer.instance;
     }
 
     /**

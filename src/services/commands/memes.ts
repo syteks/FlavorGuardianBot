@@ -1,8 +1,9 @@
 import {Message, StreamDispatcher, VoiceConnection} from "discord.js";
-import { injectable } from "inversify";
+import {inject, injectable} from "inversify";
 import memes from "../../storage/audio.json";
 import {AudioClip, Meme} from "../../interfaces";
 import {AudioPlayer} from "../../class/audio-player";
+import {TYPES} from "../../types";
 
 @injectable()
 export class Memes {
@@ -17,9 +18,17 @@ export class Memes {
     private memes: Meme[];
 
     /**
-     * Instantiate the message responder
+     * Access the jukebox in order to play and process the memes clips
      */
-    constructor() {
+    private audioPlayer: AudioPlayer;
+
+    /**
+     * Initialize the command class, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
+     *
+     * @param audioPlayer This is the bot jukebox, used to process the url's and contains an array of our
+     */
+    constructor(@inject(TYPES.AudioPlayer) audioPlayer: AudioPlayer) {
+        this.audioPlayer = audioPlayer;
         this.memes = memes;
     }
 
@@ -62,7 +71,7 @@ export class Memes {
 
         // This is where the clip will be played
         if (!message.guild.voiceConnection) {
-            AudioPlayer.getAudioPlayer().processAudioUrl(clipUrl)
+            this.audioPlayer.processAudioUrl(clipUrl)
                 .then((audioClip: AudioClip) => {
                     if (audioClip.audioTitle) {
                         message.member.voiceChannel.join()
