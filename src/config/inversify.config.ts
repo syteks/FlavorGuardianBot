@@ -6,7 +6,7 @@ import { Client } from "discord.js";
 import { MessageResponder } from "../services/message-responder";
 import { PingFinder } from "../services/commands/ping-finder";
 import { Memes } from "../services/commands/memes";
-import {AudioPlayer} from "../class/audio-player";
+import { AudioPlayer } from "../class/audio-player";
 
 let container = new Container();
 

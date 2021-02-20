@@ -1,9 +1,9 @@
-import {Message, StreamDispatcher, VoiceConnection} from "discord.js";
-import {inject, injectable} from "inversify";
+import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { inject, injectable } from "inversify";
 import memes from "../../storage/audio.json";
-import {AudioClip, Meme} from "../../interfaces";
-import {AudioPlayer} from "../../class/audio-player";
-import {TYPES} from "../../types";
+import { AudioClip, Meme } from "../../interfaces";
+import { AudioPlayer } from "../../class/audio-player";
+import { TYPES } from "../../types";
 
 @injectable()
 export class Memes {
@@ -25,7 +25,7 @@ export class Memes {
     /**
      * Initialize the command class, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
      *
-     * @param audioPlayer This is the bot jukebox, used to process the url's and contains an array of our audio playlist.
+     * @param audioPlayer - This is the bot jukebox, used to process the url's and contains an array of our audio playlist.
      */
     constructor(@inject(TYPES.AudioPlayer) audioPlayer: AudioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -36,8 +36,8 @@ export class Memes {
      * This will find the clip that we want to play for the user.
      * If it doesn't find the given clip name in the list, it will warn the user.
      *
-     * @param {Message} message
-     * @param {string} parameters
+     * @param message - The Message of the user
+     * @param parameters - A string that contains the parameters to the command
      * @returns {Promise<Message | Message[]>}
      */
     public action(message: Message, parameters: string | string[]): Promise<Message | Message[]> {
@@ -90,13 +90,13 @@ export class Memes {
                                     connection.disconnect();
                                 });
                             })
-                            .catch((_error: any) => {
+                            .catch((_error: string) => {
                                 // @todo: catch errors and do something about it!
                             });
                     }
                 })
-                .catch((_err: any) => {
-                    return message.reply(_err);
+                .catch((err: string) => {
+                    return message.reply(err);
                 });
         }
 
@@ -107,9 +107,9 @@ export class Memes {
      * This function will return the clip associated with the given meme name.
      * If the clip is not found in the list, returns empty string.
      *
-     * @param {string} key
+     * @param key - A string
      *
-     * @returns {string|null} Returns the string or a null if the clip is not found
+     * @returns Returns the string or a null if the clip is not found
      */
     public findClip(key: string): string | null {
         return this.memes.find(meme => meme.key === key)?.clip || null;
@@ -118,7 +118,7 @@ export class Memes {
     /**
      * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
      *
-     * @returns {string} Returns a random clip found in the list
+     * @returns Returns a random clip as a string found in the list
      */
     private randomClip(): string {
         // Get a random number between 0 and the amount of clip found in the .json file

@@ -1,7 +1,7 @@
-import {injectable} from "inversify";
-import {Readable} from "stream";
-import {AudioClip} from "../interfaces";
-import youtubePlayer, {videoInfo} from "ytdl-core";
+import { injectable } from "inversify";
+import { Readable } from "stream";
+import { AudioClip } from "../interfaces";
+import youtubePlayer, { videoInfo } from "ytdl-core";
 
 @injectable()
 export class AudioPlayer {

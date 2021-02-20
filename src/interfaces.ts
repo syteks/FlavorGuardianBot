@@ -1,5 +1,5 @@
-import {Message} from "discord.js";
-import {Readable} from "stream";
+import { Message } from "discord.js";
+import { Readable } from "stream";
 
 export interface Meme {
     key: string,
