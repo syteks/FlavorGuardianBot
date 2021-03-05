@@ -29,13 +29,11 @@
         "dotenv": "^8.2.0",
         "ffmpeg-static": "^4.1.1",
         "inversify": "^5.0.1",
-        "mongodb": "^3.6.3",
         "opusscript": "0.0.7",
         "reflect-metadata": "^0.1.13",
         "ytdl-core": "^4.4.5"
     },
     "devDependencies": {
-        "@types/mongodb": "^3.6.6",
         "@types/node": "^14.14.16",
         "nodemon-webpack-plugin": "^4.4.4",
         "ts-loader": "^8.0.12",

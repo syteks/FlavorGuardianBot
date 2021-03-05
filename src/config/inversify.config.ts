@@ -8,6 +8,7 @@ import { PingFinder } from "../services/commands/ping-finder";
 import { Memes } from "../services/commands/memes";
 import { MemeService } from "../services/meme-service";
 import { MongoDBClient } from "../utils/mongodb/client";
+import { AudioPlayer } from "../class/audio-player";
 
 let container = new Container();
 
@@ -19,5 +20,6 @@ container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
 container.bind<Memes>(TYPES.Memes).to(Memes).inSingletonScope();
 container.bind<MemeService>(TYPES.MemeService).to(MemeService);
 container.bind<MongoDBClient>(TYPES.MongoDBClient).to(MongoDBClient);
+container.bind<AudioPlayer>(TYPES.AudioPlayer).to(AudioPlayer).inSingletonScope();
 
 export default container;

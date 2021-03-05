@@ -13,4 +13,5 @@ export const TYPES = {
     Memes: Symbol("Memes"),
     MemeService: Symbol("MemeService"),
     MongoDBClient: Symbol('MongoDBClient'),
+    AudioPlayer: Symbol("AudioPlayer"),
 };

@@ -1,7 +1,7 @@
 [
     {
         "key": "meat",
-        "clip": "https://www.youtube.com/watch?v=Acjf66Qdj2U"
+        "clip": "https://www.youtube.com/watch?v=EvjS2KJlu-I"
     },
     {
         "key": "nice",
@@ -297,18 +297,22 @@
     },
     {
         "key": "coton-ouate",
-        "clip": "https://www.youtube.com/watch?v=_whvVXX0hCk"
+        "clip": "https://www.youtube.com/watch?v=_whvVXX0hCk&ab_channel=BleuJeansBleu"
     },
     {
         "key": "opossum",
         "clip": "https://www.youtube.com/watch?v=7LU7FP8jhGE"
     },
     {
-        "key": "gorbage",
-        "clip": "https://www.youtube.com/watch?v=cfiPB8omuQQ"
+        "key": "piece-of-garbage",
+        "clip": "https://www.youtube.com/watch?v=FZUcpVmEHuk&ab_channel=billwurtz"
     },
     {
-        "key": "nutrition",
-        "clip": "https://www.youtube.com/watch?v=6rE8Um6h4ow"
+        "key": "retard-alert",
+        "clip": "https://www.youtube.com/watch?v=YySY-_d7C7I&ab_channel=GamingSoundEffects"
+    },
+    {
+        "key": "who-are-you",
+        "clip": "https://www.youtube.com/watch?v=KGA83empYmY&ab_channel=GFXSounds"
     }
 ]

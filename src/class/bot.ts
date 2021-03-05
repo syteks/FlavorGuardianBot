@@ -28,10 +28,10 @@ export class Bot {
 
     /**
      * Instantiate the bot
-     * 
-     * @param client 
-     * @param token 
-     * @param messageResponder 
+     *
+     * @param client
+     * @param token
+     * @param messageResponder
      */
     constructor(
         @inject(TYPES.Client) client: Client,
