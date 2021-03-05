@@ -8,7 +8,7 @@ The ultimate Flavor Guardian
 > #### The bot command prefix (**optional** since there is a default prefix '~')
 > BOT_COMMAND_PREFIX=~ 
 - __environment__
-> #### To install the dependecies and the libraries
+> #### To install the dependencies and the libraries
 > ``npm install`` or ``npm i``
 > #### Build Dev
 > ``webpack --mode development``
@@ -18,7 +18,7 @@ The ultimate Flavor Guardian
 > ``webpack --mode production``
 > #### Run prod
 > ``node ./dist/index.js``
-> #### Docker set up the environnement with one command and build it
+> #### Docker set up the environment with one command and build it
 > ``docker-compose up --build``
 > #### Docker shutdown
 > ``docker-compose down``

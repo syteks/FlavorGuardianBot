@@ -37,6 +37,8 @@ export class MessageResponder {
             pingFinder,
             memes
         ];
+
+        // The meme's list
         this.memes = memes;
     }
 
