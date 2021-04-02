@@ -7,7 +7,6 @@ import { CommandObject } from "../../../interfaces";
 import { TYPES } from "../../../types";
 import { MemeService } from "../../meme-service";
 
-
 @injectable()
 export class Memes implements CommandObject {
     /**
