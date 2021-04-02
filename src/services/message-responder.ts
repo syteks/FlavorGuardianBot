@@ -1,9 +1,12 @@
 import { Message } from "discord.js";
 import { PingFinder } from "./commands/ping-finder";
-import { Memes } from "./commands/memes";
+import { Memes } from "./commands/memes/memes";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { CommandObject } from "../interfaces";
+import { AddMeme } from "./commands/memes/add-meme";
+import { UpdateMeme } from "./commands/memes/update-meme";
+import { DeleteMeme } from "./commands/memes/delete-meme";
 
 @injectable()
 export class MessageResponder {
@@ -27,15 +30,24 @@ export class MessageResponder {
      * Instantiate the message responder
      *
      * @param pingFinder
-     * @param memes
+     * @param memes - Plays a meme audio
+     * @param addMeme - Add a meme to the database
+     * @param updateMeme - Update a meme from the database
+     * @param deleteMeme - Delete a meme from the database
      */
     constructor(
         @inject(TYPES.PingFinder) pingFinder: PingFinder,
-        @inject(TYPES.Memes) memes: Memes
+        @inject(TYPES.Memes) memes: Memes,
+        @inject(TYPES.AddMeme) addMeme: AddMeme,
+        @inject(TYPES.UpdateMeme) updateMeme: UpdateMeme,
+        @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme
     ) {
         this.availableCommands = [
             pingFinder,
-            memes
+            memes,
+            addMeme,
+            updateMeme,
+            deleteMeme
         ];
 
         // The meme's list
@@ -85,9 +97,8 @@ export class MessageResponder {
             return command.action(message, commandParameters);
         }
 
-        // Check if the command clip is available
-        let commandClip = this.memes.findClip(originalCommand);
-
-        return commandClip ? this.memes.action(message, commandClip) : message.reply('Command has not been found.');
+        return this.memes.findClip(originalCommand).then((commandClip: string | null) => {
+            return commandClip ? this.memes.action(message, commandClip) : message.reply('Command has not been found.');
+        });
     }
 }

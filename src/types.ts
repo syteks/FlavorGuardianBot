@@ -10,7 +10,13 @@ export const TYPES = {
     Token: Symbol("Token"),
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
+
+    // Memes related symbols
     Memes: Symbol("Memes"),
+    AddMeme: Symbol("AddMeme"),
+    UpdateMeme: Symbol("UpdateMeme"),
+    DeleteMeme: Symbol("DeleteMeme"),
+
     MemeService: Symbol("MemeService"),
     MongoDBClient: Symbol('MongoDBClient'),
     AudioPlayer: Symbol("AudioPlayer"),

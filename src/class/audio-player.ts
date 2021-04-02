@@ -48,17 +48,17 @@ export class AudioPlayer {
                 };
 
                 audioClip.audioClip.on('error', function (_err: any) {
-                    return Promise.reject('The audio URL is not valid or doesn\'t');
+                    return Promise.reject('The audio URL is not valid or doesn\'t exists.');
                 });
 
                 this.currentAudioClip = audioClip;
 
                 return Promise.resolve(audioClip);
-            } else {
-                return Promise.reject('The audio URL is not valid or doesn\'t')
             }
+
+            return Promise.reject('The audio URL is not valid or doesn\'t exists.')
         } catch (err) {
-            return Promise.reject('The audio URL is not valid or doesn\'t')
+            return Promise.reject('The audio URL is not valid or doesn\'t exists.')
         }
     }
 

@@ -29,6 +29,19 @@ export class MemeService {
         });
     }
 
+    /**
+     * Returns a single value from the database that matches the given key.
+     *
+     * @param key - The key of the clip, usually this will be the command related key, to identify a playable clip
+     */
+    public getMemeByKey(key: string): Promise<Meme> {
+        return new Promise<Meme>((resolve, _reject) => {
+            this.mongoClient.findOne('meme', {key: key}, (_error, data: Meme) => {
+                resolve(data);
+            });
+        });
+    }
+
     public createMeme(meme: Meme): Promise<Meme> {
         return new Promise<Meme>((resolve, _reject) => {
             this.mongoClient.insert('meme', meme, (_error, data: Meme) => {
