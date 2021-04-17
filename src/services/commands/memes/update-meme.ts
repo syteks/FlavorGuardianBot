@@ -37,8 +37,9 @@ export class UpdateMeme implements CommandObject {
      * @returns {Promise<Message | Message[]>}
      */
     action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
-        if (commandParameters.length != 3 || !commandParameters[0] || !commandParameters[1] || !commandParameters[2]) {
-            return message.reply(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
+        // Check that the parameters passed are between 2 or 3, if we want to replace the keyname
+        if (commandParameters.length > 3 || commandParameters.length < 2) {
+            return message.reply(`Expected at least 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
         }
 
         let meme: Meme;

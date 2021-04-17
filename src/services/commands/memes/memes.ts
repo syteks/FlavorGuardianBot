@@ -1,7 +1,7 @@
-import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { Message } from "discord.js";
 import { inject, injectable } from "inversify";
 import memes from "../../../storage/audio.json";
-import { AudioClip, Meme } from "../../../interfaces";
+import { Meme } from "../../../interfaces";
 import { AudioPlayer } from "../../../class/audio-player";
 import { CommandObject } from "../../../interfaces";
 import { TYPES } from "../../../types";
@@ -61,11 +61,7 @@ export class Memes implements CommandObject {
         }
 
         // This is where the clip will be played
-        if (!message.guild.voiceConnection) {
-            return this.playMeme(message, commandParameters);
-        }
-
-        return Promise.resolve(message);
+        return this.playMeme(message, commandParameters);
     }
 
     /**
@@ -122,6 +118,7 @@ export class Memes implements CommandObject {
     }
 
     /**
+     * Play the meme audio in the discord channel
      *
      * @param message - The user sent message
      * @param params - The parameters sent with the user message
@@ -134,32 +131,13 @@ export class Memes implements CommandObject {
                 return message.reply("The given clip was not found.");
             }
 
-            // Checks the validity of the url and the content, before making the bot join the channel.
-            this.audioPlayer.processAudioUrl(clipUrl).then((audioClip: AudioClip) => {
-                if (audioClip.audioTitle) {
-                    message.member.voiceChannel.join().then((connection: VoiceConnection) => {
-                        // The dispatcher that will play the audio and close the connection when it done
-                        let dispatcher: StreamDispatcher;
-
-                        // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
-                        message.reply(`Now playing : ${audioClip.audioTitle}`).then();
-
-                        // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                        dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
-
-                        // When the audio is done playing we want to disconnect the bot
-                        dispatcher.on("end", function () {
-                            connection.disconnect();
-                        });
-                    })
-                    .catch((_error: string) => {
-                        // @todo: catch errors and do something about it!
-                    });
-                }
-            })
-            .catch((err: string) => {
-                return message.reply(err);
-            });
+            // If the bot is already playing, we just add the clip url to the list
+            if (this.audioPlayer.isPlaying) {
+                this.audioPlayer.addAudioToList(clipUrl);
+            } else {
+                // Force the jukebox into submission like a lil bitch to play the meme clip
+                this.audioPlayer.playAudio(message, clipUrl);
+            }
 
             return Promise.resolve(message);
         });
