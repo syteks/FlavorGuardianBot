@@ -3,6 +3,7 @@ import { Readable } from "stream";
 import { AudioClip } from "../interfaces";
 import youtubePlayer, { videoInfo } from "ytdl-core";
 import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import Timeout = NodeJS.Timeout;
 
 @injectable()
 export class AudioPlayer {
@@ -28,10 +29,18 @@ export class AudioPlayer {
     public isPlaying: boolean;
 
     /**
+     * Keeps the inactivity timer.
+     *
+     * @var Timeout|number|null
+     */
+    private inactivityTimeoutId: Timeout|number|null;
+
+    /**
      * Setup the audio clip
      */
     constructor() {
         this.currentAudioClip = null;
+        this.inactivityTimeoutId = null;
         this.isPlaying = false;
         this.listAudioClip = [];
     }
@@ -94,7 +103,7 @@ export class AudioPlayer {
 
     /**
      * Get the AudioClips in the list
-     * 
+     *
      * @returns {Array<AudioClip>|null}
      */
     public getAudioClipList(): Array<string> | null {
@@ -123,7 +132,7 @@ export class AudioPlayer {
                     dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
 
                     // Look into the list for the next audio to play
-                    this.dispatchNextAudio(message, dispatcher);
+                    return this.dispatchNextAudio(message, connection, dispatcher);
                 })
                 .catch((_error: string) => {
                     // @todo: catch errors and do something about it!
@@ -136,26 +145,33 @@ export class AudioPlayer {
     }
 
     /**
-     * When the bot is done singing a video it sets the status to currently playing at false and will play the next url in the list
+     * When the bot is done singing a video it sets the status to currently playing at false and will play the next url in the list.
      *
-     * @param message - We will use this to play audio if the list is not empty
-     * @param dispatcher - We listen to the play stream dispatcher on end we go and fetch the next audio in the list
+     * @param message - We will use this to play audio if the list is not empty.
+     * @param connection - The connection of the bot, that we will use to disconnect the bot.
+     * @param dispatcher - We listen to the play stream dispatcher on end we go and fetch the next audio in the list.
      */
-    public dispatchNextAudio(message: Message, dispatcher: StreamDispatcher) {
+    public dispatchNextAudio(message: Message, connection: VoiceConnection, dispatcher: StreamDispatcher) {
         dispatcher.stream.once("end", () => {
+            // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
+            dispatcher.stream.destroy();
+
             // Set the jukebox is currently playing to false
             this.isPlaying = false;
+            this.clearTimeout();
 
             // Get the next video to play from the list
-            let nextAudio = this.listAudioClip.pop();
+            let nextAudio = this.listAudioClip.shift();
 
             // If the nextAudio is not undefined or empty play it
             if (nextAudio) {
+                // Play the next audio.
                 this.playAudio(message, nextAudio);
+            } else {
+                this.inactivityTimeoutId = setTimeout(() => {
+                    connection.disconnect();
+                }, 15 * 60 * 30);
             }
-
-            // Destroy the stream/dispatcher, so we do not use ressource for nothing
-            dispatcher.stream.destroy();
         });
     }
 
@@ -166,7 +182,17 @@ export class AudioPlayer {
      */
     public addAudioToList(audioClip: string) {
         if (audioClip) {
+            this.clearTimeout();
             this.listAudioClip.push(audioClip);
         }
+    }
+
+    /**
+     * Clear the inactivity timeout if it has a set value.
+     */
+    private clearTimeout() {
+        // Clear out the inactivity timer if there is a audio in the list.
+        clearTimeout(<Timeout> this.inactivityTimeoutId);
+        this.inactivityTimeoutId = null;
     }
 }
