@@ -39,7 +39,7 @@ export class AddMeme implements CommandObject {
     public action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
         // Check if the name and the clip was passed as parameters
         if (commandParameters.length != 2 || !commandParameters[0] || !commandParameters[1]) {
-            return message.reply(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "addMeme [key|name] [url]"`)
+            return message.reply(`Expected 2 parameters, ${commandParameters.length} parameter(s) given. The structure is "addMeme [key|name] [url]"`)
         }
 
         // @todo Check if the given url is valid
@@ -49,9 +49,9 @@ export class AddMeme implements CommandObject {
         meme = new Meme(commandParameters[0], commandParameters[1]);
 
         // Check if there is already a clip associated with the given clip
-        return this.memeService.getMemeByKey(meme.key).then((existentMeme: Meme) => {
+        return this.memeService.getMemeByKey(meme.key).then((existingMeme: Meme) => {
             // Return a polite message that says the meme exists
-            if (existentMeme) {
+            if (existingMeme) {
                 return message.reply(`There is already a clip associated with the given key "${meme.key}"`)
             }
 

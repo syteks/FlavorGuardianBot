@@ -51,16 +51,16 @@ export class UpdateMeme implements CommandObject {
         }
 
         // Check if the given parameter the meme exists
-        return this.memeService.getMemeByKey(commandParameters[0]).then((existentMeme: Meme) => {
+        return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
-            if (!existentMeme) {
+            if (!existingMeme) {
                 return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
             // Assign the id found for the meme to the new model
-            meme._id = existentMeme._id;
+            meme._id = existingMeme._id;
 
-            this.memeService.updateMeme(existentMeme._id ?? '', meme);
+            this.memeService.updateMeme(existingMeme._id ?? '', meme);
 
             return Promise.resolve(message);
         });
