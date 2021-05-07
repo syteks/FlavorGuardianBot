@@ -1,9 +1,8 @@
 import { Message } from "discord.js";
 import { inject, injectable } from "inversify";
 import memes from "../../../storage/audio.json";
-import { Meme } from "../../../interfaces";
+import { Meme, CommandObject } from "../../../interfaces";
 import { AudioPlayer } from "../../../class/audio-player";
-import { CommandObject } from "../../../interfaces";
 import { TYPES } from "../../../types";
 import { MemeService } from "../../meme-service";
 
