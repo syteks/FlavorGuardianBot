@@ -58,7 +58,7 @@ export class Memes implements CommandObject {
         if (!message.member.voiceChannel) {
             return message.reply("You must be in a channel.");
         }
-
+      
         // This is where the clip will be played.
         if (!message.guild.voiceConnection) {
             return this.playMeme(message, commandParameters);
@@ -121,6 +121,7 @@ export class Memes implements CommandObject {
     }
 
     /**
+     * Play the meme audio in the discord channel
      *
      * @param message - The user sent message
      * @param params - The parameters sent with the user message
