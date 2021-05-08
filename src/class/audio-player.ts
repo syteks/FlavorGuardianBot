@@ -68,7 +68,7 @@ export class AudioPlayer {
                     audioClip: youtubePlayer.downloadFromInfo(audioBasicInfo, {filter: "audioonly", quality: "highestaudio"})
                 };
 
-                audioClip.audioClip.on('error', function (_err: any) {
+                audioClip.audioClip.on('error', function (_err: string) {
                     return Promise.reject('The audio URL is not valid or doesn\'t exists.');
                 });
 

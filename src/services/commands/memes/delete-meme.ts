@@ -37,19 +37,19 @@ export class DeleteMeme implements CommandObject {
      * @returns {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
-        // Return a message to indicate that the parameters doesn't pass the validator
+        // Return a message to indicate that the parameter(s) doesn't pass the validator
         if (commandParameters.length > 1 || !commandParameters[0]) {
             return message.reply(`Expected 1 parameter, ${commandParameters.length} parameters given`);
         }
 
         // Check if the meme exists and delete it, if the meme doesn't exist outputs a error message
-        return this.memeService.getMemeByKey(commandParameters[0]).then((existentMeme: Meme) => {
+        return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
-            if (!existentMeme) {
+            if (!existingMeme) {
                 return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
-            this.memeService.deleteMeme(existentMeme._id || '');
+            this.memeService.deleteMeme(existingMeme._id || '');
 
             return Promise.resolve(message);
         });
