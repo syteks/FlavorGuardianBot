@@ -1,0 +1,49 @@
+version: "3.5"
+services:
+  bot:
+    container_name: flavor-guardian-bot
+    restart: unless-stopped
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file: .env
+    environment:
+      BOT_TOKEN: $BOT_TOKEN
+      BOT_COMMAND_PREFIX: $BOT_COMMAND_PREFIX
+    volumes:
+      - ./src:/usr/src/app/src
+    networks:
+      - bot-network
+    depends_on:
+      memory:
+        condition: service_healthy
+
+  memory:
+    container_name: flavor-guardian-memory
+    restart: unless-stopped
+    image: mongo:4
+    ports:
+      - "27017:27017"
+    environment:
+      #- MONGO_INITDB_ROOT_USERNAME=$MONGO_ROOT_USERNAME
+      #- MONGO_INITDB_ROOT_PASSWORD=$MONGO_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE=$MONGO_DATABASE
+    volumes:
+      - memory_data:/data/db
+    networks:
+      - bot-network
+    logging:
+      driver: "none"
+    healthcheck:
+      test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/example-database --quiet` ] && echo 0 || echo 1"
+      interval: 5s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  memory_data:
