@@ -37,9 +37,8 @@ export class UpdateMeme implements CommandObject {
      * @returns {Promise<Message | Message[]>}
      */
     action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
-        // Check that the parameters passed are between 2 or 3, if we want to replace the keyname
-        if (commandParameters.length > 3 || commandParameters.length < 2) {
-            return message.reply(`Expected at least 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
+        if (commandParameters.length != 3 || !commandParameters[0] || !commandParameters[1] || !commandParameters[2]) {
+            return message.reply(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
         }
 
         let meme: Meme;
@@ -52,16 +51,16 @@ export class UpdateMeme implements CommandObject {
         }
 
         // Check if the given parameter the meme exists
-        return this.memeService.getMemeByKey(commandParameters[0]).then((existentMeme: Meme) => {
+        return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
-            if (!existentMeme) {
+            if (!existingMeme) {
                 return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
             // Assign the id found for the meme to the new model
-            meme._id = existentMeme._id;
+            meme._id = existingMeme._id;
 
-            this.memeService.updateMeme(existentMeme._id ?? '', meme);
+            this.memeService.updateMeme(existingMeme._id ?? '', meme);
 
             return Promise.resolve(message);
         });
