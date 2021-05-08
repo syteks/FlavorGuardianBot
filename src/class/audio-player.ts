@@ -121,6 +121,7 @@ export class AudioPlayer {
             if (audioClip.audioTitle) {
                 message.member.voiceChannel.join().then((connection: VoiceConnection) => {
                     this.isPlaying = true;
+                    this.clearTimeout();
 
                     // The dispatcher that will play the audio and close the connection when it done
                     let dispatcher: StreamDispatcher;
@@ -158,7 +159,6 @@ export class AudioPlayer {
 
             // Set the jukebox is currently playing to false
             this.isPlaying = false;
-            this.clearTimeout();
 
             // Get the next video to play from the list
             let nextAudio = this.listAudioClip.shift();
