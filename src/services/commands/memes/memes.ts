@@ -1,7 +1,7 @@
-import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { Message } from "discord.js";
 import { inject, injectable } from "inversify";
 import memes from "../../../storage/audio.json";
-import { AudioClip, Meme, CommandObject } from "../../../interfaces";
+import { Meme, CommandObject } from "../../../interfaces";
 import { AudioPlayer } from "../../../class/audio-player";
 import { TYPES } from "../../../types";
 import { MemeService } from "../../meme-service";
@@ -54,17 +54,13 @@ export class Memes implements CommandObject {
      * @returns {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string | string[]): Promise<Message | Message[]> {
-        // Make sure the user is in a channel.
+        // Make sure the user is in a channel
         if (!message.member.voiceChannel) {
             return message.reply("You must be in a channel.");
         }
-      
-        // This is where the clip will be played.
-        if (!message.guild.voiceConnection) {
-            return this.playMeme(message, commandParameters);
-        }
 
-        return Promise.resolve(message);
+        // This is where the clip will be played
+        return this.playMeme(message, commandParameters);
     }
 
     /**
@@ -94,7 +90,7 @@ export class Memes implements CommandObject {
      */
     private getClipByParams(params: string | string[]): Promise<string> {
         return this.findClip(params[0] || '').then((clipUrl: string|null) => {
-            // If we didn't find the clip in the database, process the param.
+            // If we didn't find the clip in the database, process the param
             if (!clipUrl) {
                 if (!Array.isArray(params)) {
                     clipUrl = params;
@@ -113,10 +109,10 @@ export class Memes implements CommandObject {
      * @returns {string}
      */
     private randomClip(): string {
-        // We should include the clips in the database + we should import them when we create the docker container.
+        // Get a random number between 0 and the amount of clip found in the .json file
         let randomClipNumber: number = Math.floor(Math.random() * memes.length);
 
-        // Output the random clip.
+        // Output the random clip
         return this.memes[randomClipNumber].clip;
     }
 
@@ -129,37 +125,18 @@ export class Memes implements CommandObject {
      */
     private playMeme(message: Message, params: string | string[]): Promise<Message | Message[]> {
         return this.getClipByParams(params).then((clipUrl: string) => {
-            // Make sure the clip is found.
+            // Make sure the clip is found
             if (!clipUrl) {
                 return message.reply("The given clip was not found.");
             }
 
-            // Checks the validity of the url and the content, before making the bot join the channel.
-            this.audioPlayer.processAudioUrl(clipUrl).then((audioClip: AudioClip) => {
-                if (audioClip.audioTitle) {
-                    message.member.voiceChannel.join().then((connection: VoiceConnection) => {
-                        // The dispatcher that will play the audio and close the connection when it done.
-                        let dispatcher: StreamDispatcher;
-
-                        // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
-                        message.reply(`Now playing : ${audioClip.audioTitle}`).then();
-
-                        // Keep the connection in a dispatcher to know when the bot is done outputting stream.
-                        dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
-
-                        // When the audio is done playing we want to disconnect the bot.
-                        dispatcher.on("end", function () {
-                            connection.disconnect();
-                        });
-                    })
-                    .catch((_error: string) => {
-                        // @todo: catch errors and do something about it!
-                    });
-                }
-            })
-            .catch((err: string) => {
-                return message.reply(err);
-            });
+            // If the bot is already playing, we just add the clip url to the list
+            if (this.audioPlayer.isPlaying) {
+                this.audioPlayer.addAudioToList(clipUrl);
+            } else {
+                // Force the jukebox into submission like a lil bitch to play the meme clip
+                this.audioPlayer.playAudio(message, clipUrl);
+            }
 
             return Promise.resolve(message);
         });
