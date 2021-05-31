@@ -1,13 +1,14 @@
 import { Message } from "discord.js";
 import { inject, injectable } from "inversify";
-import memes from "../../../storage/audio.json";
-import { Meme, CommandObject } from "../../../interfaces";
-import { AudioPlayer } from "../../../class/audio-player";
-import { TYPES } from "../../../types";
-import { MemeService } from "../../meme-service";
+import memes from "../../storage/audio.json";
+import { AudioPlayer } from "../../classes/audio-player";
+import { TYPES } from "../../types";
+import { MemeService } from "../../services/memes/meme-service";
+import Command from "../../interfaces/command";
+import Meme from "../../interfaces/meme";
 
 @injectable()
-export class Memes implements CommandObject {
+export class Memes implements Command {
     /**
      * Regex for this command
      */
@@ -31,7 +32,7 @@ export class Memes implements CommandObject {
     private memeService: MemeService;
 
     /**
-     * Initialize the command class, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
+     * Initialize the command classes, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
      *
      * @param memeService - This is the bot DB service
      * @param audioPlayer - This is the bot jukebox, used to process the url's and contains an array of our audio playlist.

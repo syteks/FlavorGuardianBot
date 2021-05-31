@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
-import { MessageResponder } from "../services/message-responder";
+import { CommandHandler } from "../services/commands/command-handler";
 
 @injectable()
 export class Bot {
@@ -24,22 +24,22 @@ export class Bot {
      * 
      * @var messageResponder
      */
-    private messageResponder: MessageResponder;
+    private commandHandler: CommandHandler;
 
     /**
      * Instantiate the bot
      *
-     * @param client
+     * @param client - The client
      * @param token
-     * @param messageResponder
+     * @param commandHandler
      */
     constructor(
         @inject(TYPES.Client) client: Client,
         @inject(TYPES.Token) token: string,
-        @inject(TYPES.MessageResponder) messageResponder: MessageResponder) {
+        @inject(TYPES.CommandHandler) commandHandler: CommandHandler) {
         this.client = client;
         this.token = token;
-        this.messageResponder = messageResponder;
+        this.commandHandler = commandHandler;
     }
 
     /**
@@ -53,7 +53,7 @@ export class Bot {
             }
 
             // Process the command
-            this.messageResponder.handle(message).then(() => {
+            this.commandHandler.handle(message).then(() => {
                 // Do any action after the message
             }).catch(() => {
                 // @todo: catch errors and do something about it!

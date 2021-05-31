@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 import { Readable } from "stream";
-import { AudioClip } from "../interfaces";
 import youtubePlayer, { videoInfo } from "ytdl-core";
 import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
 import Timeout = NodeJS.Timeout;
+import AudioClip from "../interfaces/audio-clip";
 
 @injectable()
 export class AudioPlayer {

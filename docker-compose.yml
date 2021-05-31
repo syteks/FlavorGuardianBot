@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     image: mongo:4
     ports:
-      - "27017:27017"
+      - "27018:27018"
     environment:
       #- MONGO_INITDB_ROOT_USERNAME=$MONGO_ROOT_USERNAME
       #- MONGO_INITDB_ROOT_PASSWORD=$MONGO_ROOT_PASSWORD

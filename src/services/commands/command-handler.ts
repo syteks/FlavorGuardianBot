@@ -1,15 +1,15 @@
 import { Message } from "discord.js";
-import { PingFinder } from "./commands/ping-finder";
-import { Memes } from "./commands/memes/memes";
+import { Memes } from "../../commands/memes/memes";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
-import { CommandObject } from "../interfaces";
-import { AddMeme } from "./commands/memes/add-meme";
-import { UpdateMeme } from "./commands/memes/update-meme";
-import { DeleteMeme } from "./commands/memes/delete-meme";
+import { TYPES } from "../../types";
+import { AddMeme } from "../../commands/memes/add-meme";
+import { UpdateMeme } from "../../commands/memes/update-meme";
+import { DeleteMeme } from "../../commands/memes/delete-meme";
+import Command from "../../interfaces/command";
+import { GetMeme } from "../../commands/memes/get-meme";
 
 @injectable()
-export class MessageResponder {
+export class CommandHandler {
     /**
      * We will use this array to go and dynamically fetch our commands
      * We need an object that has a regexp variable and a action function.
@@ -17,7 +17,7 @@ export class MessageResponder {
      *
      * @private Array<Commands>
      */
-    private availableCommands: Array<CommandObject>;
+    private availableCommands: Array<Command>;
 
     /**
      * This variable will be used to check if the command given is a valid clip found in the storage
@@ -29,25 +29,25 @@ export class MessageResponder {
     /**
      * Instantiate the message responder
      *
-     * @param pingFinder
      * @param memes - Plays a meme audio
      * @param addMeme - Add a meme to the database
      * @param updateMeme - Update a meme from the database
      * @param deleteMeme - Delete a meme from the database
+     * @param getMeme - Get a meme or memes from the database
      */
     constructor(
-        @inject(TYPES.PingFinder) pingFinder: PingFinder,
         @inject(TYPES.Memes) memes: Memes,
         @inject(TYPES.AddMeme) addMeme: AddMeme,
         @inject(TYPES.UpdateMeme) updateMeme: UpdateMeme,
-        @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme
+        @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme,
+        @inject(TYPES.GetMeme) getMeme: GetMeme
     ) {
         this.availableCommands = [
-            pingFinder,
             memes,
             addMeme,
             updateMeme,
-            deleteMeme
+            deleteMeme,
+            getMeme
         ];
 
         // The meme's list
@@ -76,7 +76,7 @@ export class MessageResponder {
         let userInput: string[],
             originalCommand: string,
             commandParameters: string[],
-            command: CommandObject | null;
+            command: Command|null;
 
         // User input, it contains the command and the associated parameters.
         userInput = message.content.substr(1).split(" ");
@@ -90,7 +90,7 @@ export class MessageResponder {
             return Promise.resolve(message);
         }
 
-        command = this.availableCommands.find(availableCommand => MessageResponder.isIntendedCommand(originalCommand, availableCommand.regexp)) || null;
+        command = this.availableCommands.find(availableCommand => CommandHandler.isIntendedCommand(originalCommand, availableCommand.regexp)) || null;
 
         // If the originalCommand is not found, try to check that the command is maybe a clip key
         if (command) {

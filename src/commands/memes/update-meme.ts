@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
-import { CommandObject } from "../../../interfaces";
 import { Message } from "discord.js";
-import { MemeService } from "../../meme-service";
-import { TYPES } from "../../../types";
-import { Meme } from "../../../models/meme";
+import { MemeService } from "../../services/memes/meme-service";
+import { TYPES } from "../../types";
+import Command from "../../interfaces/command";
+import { Meme } from "../../models/meme";
 
 @injectable()
-export class UpdateMeme implements CommandObject {
+export class UpdateMeme implements Command {
     /**
      * Regex for this command.
      */
@@ -20,7 +20,7 @@ export class UpdateMeme implements CommandObject {
     private memeService: MemeService;
 
     /**
-     * Initialize the command class, that will process your mom before outputting it into a soundtrack, sike she was too fat to process!
+     * Initialize the command classes, that will process your mom before outputting it into a soundtrack, sike she was too fat to process!
      *
      * @param memeService - This will contain our connection to our data base that we can use to make action to the database.
      */
