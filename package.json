@@ -25,14 +25,16 @@
     ],
     "license": "ISC",
     "dependencies": {
-        "discord.js": "^11.6.4",
+        "@discordjs/opus": "^0.5.3",
+        "discord-buttons": "^3.2.1",
+        "discord.js": "^12.5.3",
         "dotenv": "^8.2.0",
         "ffmpeg-static": "^4.1.1",
         "inversify": "^5.0.1",
         "mongodb": "^3.6.4",
-        "opusscript": "0.0.7",
+        "opusscript": "^0.0.8",
         "reflect-metadata": "^0.1.13",
-        "ytdl-core": "^4.4.5"
+        "ytdl-core": "^4.8.2"
     },
     "devDependencies": {
         "@types/mongodb": "^3.6.8",

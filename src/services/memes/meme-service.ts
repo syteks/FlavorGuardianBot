@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import Service from "../service";
+import { Service } from "../service";
 import { Meme } from "../../models/meme";
 import { MongoError } from "mongodb";
 

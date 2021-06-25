@@ -2,11 +2,11 @@ import { inject, injectable } from "inversify";
 import { Message } from "discord.js";
 import { TYPES } from "../../types";
 import { MemeService } from "../../services/memes/meme-service";
-import Command from "../../interfaces/command";
+import { CommandHandler } from "../../interfaces/command-handler";
 import { Meme } from "../../models/meme";
 
 @injectable()
-export class AddMeme implements Command {
+export class AddMeme implements CommandHandler {
     /**
      * Regex for the command label.
      */
@@ -34,12 +34,12 @@ export class AddMeme implements Command {
      *
      * @param message - The Message of the user
      * @param commandParameters - A string that contains the parameters to the command
-     * @returns {Promise<Message | Message[]>}
+     * @return {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
         // Check if the name and the clip was passed as parameters
         if (commandParameters.length != 2 || !commandParameters[0] || !commandParameters[1]) {
-            return message.reply(`Expected 2 parameters, ${commandParameters.length} parameter(s) given. The structure is "addMeme [key|name] [url]"`)
+            return message.channel.send(`Expected 2 parameters, ${commandParameters.length} parameter(s) given. The structure is "addMeme [key|name] [url]"`)
         }
 
         // @todo Check if the given url is valid
@@ -52,7 +52,7 @@ export class AddMeme implements Command {
         return this.memeService.getMemeByKey(meme.key).then((existingMeme: Meme) => {
             // Return a polite message that says the meme exists
             if (existingMeme) {
-                return message.reply(`There is already a clip associated with the given key "${meme.key}"`)
+                return message.channel.send(`There is already a clip associated with the given key "${meme.key}"`)
             }
 
             this.memeService.createMeme(meme);

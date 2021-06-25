@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 
-export default interface AudioClip {
+export interface AudioClip {
     /**
      * Contains the audio title.
      */

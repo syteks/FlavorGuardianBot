@@ -1,22 +1,26 @@
 import { MongoDBClient } from "../utils/mongodb/client";
 import { Cursor, MongoError, ObjectID } from "mongodb";
 
-export default class Service extends MongoDBClient {
+export class Service extends MongoDBClient {
     /**
      * This will keep our cursor so we can use it and chain other filter to our query.
+     *
      * @var {Cursor}
      */
     private cursor?: Cursor;
 
     /**
      * The collection we want to retrieve our data from.
+     *
      * @var {string}
      */
     protected collection: string = '';
 
     /**
      * Find data in the database for a given collection
+     *
      * @param filter - Contains our filter object that we will use to filter our database data.
+     *
      * @return {Cursor}
      */
     protected find(filter: Object = {}): Cursor {
@@ -28,7 +32,9 @@ export default class Service extends MongoDBClient {
 
     /**
      * Find the data in the database and limit it to one data/one instance.
+     *
      * @param filter - Contains our filter object that we will use to filter our database data.
+     *
      * @return {Cursor}
      */
     protected findOne(filter: Object = {}): Cursor {
@@ -40,8 +46,10 @@ export default class Service extends MongoDBClient {
 
     /**
      * Find all the data from a specified collection.
+     *
      * @param objectId - The data id.
      * @param result - The result of our search.
+     *
      * @return {void}
      */
     protected findOneById(objectId: string, result: (error: any, data: any) => void) {
@@ -52,8 +60,10 @@ export default class Service extends MongoDBClient {
 
     /**
      * Insert data into a given collection.
+     *
      * @param model - The model that we want to insert.
      * @param result - The result of the inserting into the db.
+     *
      * @return {void}
      */
     public insert(model: Object, result: (error: any, data: any) => void): void {
@@ -64,9 +74,11 @@ export default class Service extends MongoDBClient {
 
     /**
      * Update a specified data for a given collection.
+     *
      * @param objectId - The data that we want to update.
      * @param model - The new values to insert for the data.
      * @param result - The result of the update, was it successful.
+     *
      * @return {void}
      */
     public update(objectId: string, model: Object, result: (error: any, data: any) => void): void {
@@ -79,8 +91,10 @@ export default class Service extends MongoDBClient {
 
     /**
      * Remove a specified data from a collection.
+     *
      * @param objectId - The data that we want to remove from the collection.
      * @param result - Result of the removal.
+     *
      * @return {void}
      */
     public remove(objectId: string, result: (error: any, data: any) => void): void {
@@ -91,17 +105,23 @@ export default class Service extends MongoDBClient {
 
     /**
      * We set the limit of the data we want to fetch from the database.
+     *
      * @param limit - It is a number between 0 to n.
+     *
+     * @return {void}
      */
-    protected limit(limit: number) {
+    protected limit(limit: number): void {
         this.cursor?.limit(limit);
     }
 
     /**
      * Skip, will take a offset, index data that we want to skip data from.
+     *
      * @param offset - The data offset we want to start fetching our data from.
+     *
+     * @return {void}
      */
-    protected skip(offset: number) {
+    protected skip(offset: number): void {
         this.cursor?.skip(offset);
     }
 }

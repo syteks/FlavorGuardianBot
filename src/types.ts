@@ -8,7 +8,10 @@ export const TYPES = {
     Bot: Symbol("Bot"),
     Client: Symbol("Client"),
     Token: Symbol("Token"),
+    Commands: Symbol("Commands"),
     CommandHandler: Symbol("CommandHandler"),
+    ButtonHandler: Symbol("ButtonHandler"),
+    EmbedMessage: Symbol("EmbedMessage"),
 
     // Memes related symbols
     Memes: Symbol("Memes"),
@@ -21,6 +24,10 @@ export const TYPES = {
     MemeService: Symbol("MemeService"),
     MongoDBClient: Symbol('MongoDBClient'),
     AudioPlayer: Symbol("AudioPlayer"),
+
+    // ButtonsHandler
+    MoreGetMemes: Symbol("MoreGetMemes"),
+    LessGetMemes: Symbol("LessGetMemes"),
 
     // Models
     Meme: Symbol("Meme"),

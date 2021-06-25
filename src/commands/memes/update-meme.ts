@@ -2,11 +2,11 @@ import { inject, injectable } from "inversify";
 import { Message } from "discord.js";
 import { MemeService } from "../../services/memes/meme-service";
 import { TYPES } from "../../types";
-import Command from "../../interfaces/command";
+import { CommandHandler } from "../../interfaces/command-handler";
 import { Meme } from "../../models/meme";
 
 @injectable()
-export class UpdateMeme implements Command {
+export class UpdateMeme implements CommandHandler {
     /**
      * Regex for this command.
      */
@@ -15,7 +15,7 @@ export class UpdateMeme implements Command {
     /**
      * Contains the database service that we will use in order to apply CRUD logic to our memes.
      *
-     * @private MemeService
+     * @var {MemeService}
      */
     private memeService: MemeService;
 
@@ -34,11 +34,11 @@ export class UpdateMeme implements Command {
      *
      * @param message - The Message of the user
      * @param commandParameters - A string that contains the parameters to the command
-     * @returns {Promise<Message | Message[]>}
+     * @return {Promise<Message | Message[]>}
      */
     action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
         if (commandParameters.length != 3 || !commandParameters[0] || !commandParameters[1] || !commandParameters[2]) {
-            return message.reply(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
+            return message.channel.send(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
         }
 
         let meme: Meme;
@@ -54,7 +54,7 @@ export class UpdateMeme implements Command {
         return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
             if (!existingMeme) {
-                return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
+                return message.channel.send(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
             // Assign the id found for the meme to the new model

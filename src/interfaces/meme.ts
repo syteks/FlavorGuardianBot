@@ -1,4 +1,4 @@
-export default interface Meme {
+export interface Meme {
     /**
      * The key of the meme-clip.
      */

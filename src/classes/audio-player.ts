@@ -2,8 +2,9 @@ import { injectable } from "inversify";
 import { Readable } from "stream";
 import youtubePlayer, { videoInfo } from "ytdl-core";
 import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { AudioClip } from "../interfaces/audio-clip";
+import { EmbedRichMessage } from "./embeds/embed-rich-message";
 import Timeout = NodeJS.Timeout;
-import AudioClip from "../interfaces/audio-clip";
 
 @injectable()
 export class AudioPlayer {
@@ -50,7 +51,7 @@ export class AudioPlayer {
      *
      * @param audioUrl - The audio url that we want to process
      *
-     * @returns {Promise<AudioClip>}
+     * @return {Promise<AudioClip>}
      */
     public async processAudioUrl(audioUrl: string): Promise<AudioClip> {
         try {
@@ -59,7 +60,7 @@ export class AudioPlayer {
                 audioClip: AudioClip;
 
             // Get the audio information from the api
-            audioBasicInfo = await youtubePlayer.getInfo(audioUrl);
+            audioBasicInfo = await youtubePlayer.getInfo("https://www.youtube.com/watch?v=eTykY2B0kEY&ab_channel=glopez5000");
 
             if (audioBasicInfo && audioBasicInfo.player_response.playabilityStatus.status) {
                 audioClip = {
@@ -79,6 +80,7 @@ export class AudioPlayer {
 
             return Promise.reject('The audio URL is not valid or doesn\'t exists.')
         } catch (err) {
+            console.log(err);
             return Promise.reject('The audio URL is not valid or doesn\'t exists.')
         }
     }
@@ -86,7 +88,7 @@ export class AudioPlayer {
     /**
      * We get the audioTitle from the audioClip.
      *
-     * @returns {string|null}
+     * @return {string | null}
      */
     public getAudioTitle(): string | null {
         return this.currentAudioClip?.audioTitle || null;
@@ -95,7 +97,7 @@ export class AudioPlayer {
     /**
      * Get the audioClip
      *
-     * @returns {Readable|null}
+     * @return {Readable | null}
      */
     public getAudioClip(): Readable | null {
         return this.currentAudioClip?.audioClip || null;
@@ -104,7 +106,7 @@ export class AudioPlayer {
     /**
      * Get the AudioClips in the list
      *
-     * @returns {Array<AudioClip>|null}
+     * @return {Array<AudioClip> | null}
      */
     public getAudioClipList(): Array<string> | null {
         return this.listAudioClip;
@@ -113,24 +115,38 @@ export class AudioPlayer {
     /**
      * This will make the bot join the user channel
      *
-     * @param message - The message sent by the user, that we will use to redirect our bot to the user channel
-     * @param clipUrl - The clip that we want to play
+     * @param message - The message sent by the user, that we will use to redirect our bot to the user channel.
+     * @param clipUrl - The clip that we want to play.
      */
     public playAudio(message: Message, clipUrl: string) {
         this.processAudioUrl(clipUrl).then((audioClip: AudioClip) => {
             if (audioClip.audioTitle) {
-                message.member.voiceChannel.join().then((connection: VoiceConnection) => {
+                message.member?.voice.channel?.join().then((connection: VoiceConnection) => {
                     this.isPlaying = true;
                     this.clearTimeout();
 
                     // The dispatcher that will play the audio and close the connection when it done
-                    let dispatcher: StreamDispatcher;
+                    let dispatcher: StreamDispatcher,
+                        richEmbedMessage: EmbedRichMessage;
+
+                    // Rich embed message that we will send, to indicate what is currently playing.
+                    richEmbedMessage = new EmbedRichMessage();
+
+                    richEmbedMessage.setColor("ORANGE");
+
+                    richEmbedMessage.addFields([
+                        {
+                            "name": "Now playing",
+                            "value": audioClip.audioTitle,
+                            "inline": true
+                        }
+                    ]);
 
                     // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
-                    message.reply(`Now playing : ${audioClip.audioTitle}`).then();
+                    message.channel.send(richEmbedMessage);
 
                     // Keep the connection in a dispatcher to know when the bot is done outputting stream
-                    dispatcher = connection.playStream(audioClip.audioClip, {volume: 0.25});
+                    dispatcher = connection.play(audioClip.audioClip, {volume: 0.25});
 
                     // Look into the list for the next audio to play
                     return this.dispatchNextAudio(message, connection, dispatcher);
@@ -141,7 +157,7 @@ export class AudioPlayer {
             }
         })
         .catch((err: string) => {
-            return message.reply(err);
+            return message.channel.send(err);
         });
     }
 
@@ -153,9 +169,9 @@ export class AudioPlayer {
      * @param dispatcher - We listen to the play stream dispatcher on end we go and fetch the next audio in the list.
      */
     public dispatchNextAudio(message: Message, connection: VoiceConnection, dispatcher: StreamDispatcher) {
-        dispatcher.stream.once("end", () => {
+        dispatcher.once("finish", () => {
             // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
-            dispatcher.stream.destroy();
+            dispatcher.destroy();
 
             // Set the jukebox is currently playing to false
             this.isPlaying = false;

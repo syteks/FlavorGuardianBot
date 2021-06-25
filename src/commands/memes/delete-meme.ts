@@ -2,11 +2,11 @@ import { inject, injectable } from "inversify";
 import { Message } from "discord.js";
 import { TYPES } from "../../types";
 import { MemeService } from "../../services/memes/meme-service";
-import Command from "../../interfaces/command";
+import { CommandHandler } from "../../interfaces/command-handler";
 import { Meme } from "../../models/meme";
 
 @injectable()
-export class DeleteMeme implements Command {
+export class DeleteMeme implements CommandHandler {
     /**
      * Regex for this command
      */
@@ -34,19 +34,19 @@ export class DeleteMeme implements Command {
      *
      * @param message - The Message of the user
      * @param commandParameters - A string that contains the parameters to the command
-     * @returns {Promise<Message | Message[]>}
+     * @return {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
         // Return a message to indicate that the parameter(s) doesn't pass the validator
         if (commandParameters.length > 1 || !commandParameters[0]) {
-            return message.reply(`Expected 1 parameter, ${commandParameters.length} parameters given`);
+            return message.channel.send(`Expected 1 parameter, ${commandParameters.length} parameters given`);
         }
 
         // Check if the meme exists and delete it, if the meme doesn't exist outputs a error message
         return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
             if (!existingMeme) {
-                return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
+                return message.channel.send(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
             this.memeService.deleteMeme(existingMeme._id || '');

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "addMeme {meme-key} {meme-url}",
+    "value": "Add a new meme. The {meme-key} will be used to play the associated {meme-url}.",
+    "inline": false
+  },
+  {
+    "name": "deleteMeme {meme-key}",
+    "value": "Deletes a meme from the list.",
+    "inline": false
+  },
+  {
+    "name": "updateMeme {old-meme-key} {url} {new-meme-key-optional}",
+    "value": "Update a meme content or a meme key from the list.",
+    "inline": false
+  },
+  {
+    "name": "getMeme",
+    "value": "Get a reactive list with the available memes in the database.",
+    "inline": false
+  },
+  {
+    "name": "memes {meme-key} OR meme-key",
+    "value": "Play a random meme. We can also specify a meme to play.",
+    "inline": false
+  },
+  {
+    "name": "commands",
+    "value": "Get a list of all available commands.",
+    "inline": false
+  }
+]

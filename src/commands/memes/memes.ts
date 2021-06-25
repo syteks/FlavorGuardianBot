@@ -4,11 +4,11 @@ import memes from "../../storage/audio.json";
 import { AudioPlayer } from "../../classes/audio-player";
 import { TYPES } from "../../types";
 import { MemeService } from "../../services/memes/meme-service";
-import Command from "../../interfaces/command";
-import Meme from "../../interfaces/meme";
+import { CommandHandler } from "../../interfaces/command-handler";
+import { Meme } from "../../interfaces/meme";
 
 @injectable()
-export class Memes implements Command {
+export class Memes implements CommandHandler {
     /**
      * Regex for this command
      */
@@ -27,14 +27,14 @@ export class Memes implements Command {
     /**
      * Contains the database service that we will use in order to apply CRUD logic to our memes.
      *
-     * @private MemeService
+     * @var {MemeService}
      */
     private memeService: MemeService;
 
     /**
      * Initialize the command classes, that will process your mom before outputing it into a soundtrack, sike she was too fat to process!
      *
-     * @param memeService - This is the bot DB service
+     * @param memeService - This is the bot DB service.
      * @param audioPlayer - This is the bot jukebox, used to process the url's and contains an array of our audio playlist.
      */
     constructor(
@@ -50,14 +50,15 @@ export class Memes implements Command {
      * This will find the clip that we want to play for the user.
      * If it doesn't find the given clip name in the list, it will warn the user.
      *
-     * @param message - The Message of the user
-     * @param commandParameters - A string that contains the parameters to the command
-     * @returns {Promise<Message | Message[]>}
+     * @param message - The Message of the user.
+     * @param commandParameters - A string that contains the parameters to the command.
+     *
+     * @return {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string | string[]): Promise<Message | Message[]> {
         // Make sure the user is in a channel
-        if (!message.member.voiceChannel) {
-            return message.reply("You must be in a channel.");
+        if (!message.member?.voice.channel) {
+            return message.channel.send("You must be in a channel.");
         }
 
         // This is where the clip will be played
@@ -70,7 +71,7 @@ export class Memes implements Command {
      *
      * @param key - A string
      *
-     * @returns {Promise<string | null>}
+     * @return {Promise<string | null>}
      */
     public findClip(key: string): Promise<string|null> {
         return this.memeService.getMemeByKey(key).then((dbMeme: Meme) => {
@@ -87,7 +88,7 @@ export class Memes implements Command {
      *
      * @param params - This will contain our meme key, that we can use to retrieve the url.
      *
-     * @returns {Promise<string>}
+     * @return {Promise<string>}
      */
     private getClipByParams(params: string | string[]): Promise<string> {
         return this.findClip(params[0] || '').then((clipUrl: string|null) => {
@@ -107,7 +108,7 @@ export class Memes implements Command {
     /**
      * This function should never return empty, unless somebody played with the randomizer and outputs numbers that are outside the list range.
      *
-     * @returns {string}
+     * @return {string}
      */
     private randomClip(): string {
         // Get a random number between 0 and the amount of clip found in the .json file
@@ -122,13 +123,14 @@ export class Memes implements Command {
      *
      * @param message - The user sent message
      * @param params - The parameters sent with the user message
-     * @private {Promise<Message | Message[]>}
+     *
+     * @return {Promise<Message | Message[]>}
      */
     private playMeme(message: Message, params: string | string[]): Promise<Message | Message[]> {
         return this.getClipByParams(params).then((clipUrl: string) => {
             // Make sure the clip is found
             if (!clipUrl) {
-                return message.reply("The given clip was not found.");
+                return message.channel.send("The given clip was not found.");
             }
 
             // If the bot is already playing, we just add the clip url to the list

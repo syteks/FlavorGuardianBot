@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { default as IMeme } from "../interfaces/meme";
+import { Meme as IMeme } from "../interfaces/meme";
 
 @injectable()
 export class Meme implements IMeme {

@@ -3,7 +3,7 @@ import { Container } from "inversify";
 import { TYPES } from "../types";
 import { Bot } from "../classes/bot";
 import { Client } from "discord.js";
-import { CommandHandler } from "../services/commands/command-handler";
+import { CommandHandler } from "../handlers/command-handler";
 import { Memes } from "../commands/memes/memes";
 import { MemeService } from "../services/memes/meme-service";
 import { MongoDBClient } from "../utils/mongodb/client";
@@ -13,13 +13,24 @@ import { UpdateMeme } from "../commands/memes/update-meme";
 import { DeleteMeme } from "../commands/memes/delete-meme";
 import { GetMeme } from "../commands/memes/get-meme";
 import { Meme } from "../models/meme";
+import { EmbedMessage } from "../classes/embeds/embed-message";
+import { Commands } from "../commands/commands";
+import { MoreGetMemes } from "../classes/buttons/more-get-memes";
+import { LessGetMemes } from "../classes/buttons/less-get-memes";
+import { ButtonHandler } from "../handlers/button-handler";
 
 let container = new Container();
+let client = new Client();
+
+require("discord-buttons")(client);
 
 container.bind<Bot>(TYPES.Bot).to(Bot).inSingletonScope();
-container.bind<Client>(TYPES.Client).toConstantValue(new Client());
+container.bind<Client>(TYPES.Client).toConstantValue(client);
 container.bind<string>(TYPES.Token).toConstantValue(process.env.BOT_TOKEN || '');
+container.bind<Commands>(TYPES.Commands).to(Commands).inSingletonScope();
 container.bind<CommandHandler>(TYPES.CommandHandler).to(CommandHandler).inSingletonScope();
+container.bind<ButtonHandler>(TYPES.ButtonHandler).to(ButtonHandler).inSingletonScope();
+container.bind<EmbedMessage>(TYPES.EmbedMessage).to(EmbedMessage).inSingletonScope();
 
 // Meme related binding
 container.bind<Memes>(TYPES.Memes).to(Memes).inSingletonScope();
@@ -32,6 +43,10 @@ container.bind<GetMeme>(TYPES.GetMeme).to(GetMeme).inSingletonScope();
 container.bind<MemeService>(TYPES.MemeService).to(MemeService);
 container.bind<MongoDBClient>(TYPES.MongoDBClient).to(MongoDBClient).inSingletonScope();
 container.bind<AudioPlayer>(TYPES.AudioPlayer).to(AudioPlayer).inSingletonScope();
+
+// Button related handlers
+container.bind<MoreGetMemes>(TYPES.MoreGetMemes).to(MoreGetMemes).inSingletonScope();
+container.bind<LessGetMemes>(TYPES.LessGetMemes).to(LessGetMemes).inSingletonScope();
 
 // Models binding
 container.bind<Meme>(TYPES.Meme).to(Meme).inSingletonScope();
