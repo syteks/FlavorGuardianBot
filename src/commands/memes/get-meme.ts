@@ -77,7 +77,7 @@ export class GetMeme implements CommandHandler {
             message.channel.send(richEmbed.toObject()).then((embedMessageSent: Message) => {
                 // The message that is sent back as a reply.
                 if (embedMessageSent.guild) {
-                    this.embedMessage.setEmbedReactiveMessageByServerID('get-memes', embedMessageSent.guild?.id, embedMessageSent.id, {offset: 6, limit: 6});
+                    this.embedMessage.setEmbedReactiveMessageByServerID('get-memes', embedMessageSent.guild?.id, embedMessageSent.id, {offset: 0, limit: 6});
                 }
             });
         });
