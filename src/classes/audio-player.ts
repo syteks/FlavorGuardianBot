@@ -60,7 +60,7 @@ export class AudioPlayer {
                 audioClip: AudioClip;
 
             // Get the audio information from the api
-            audioBasicInfo = await youtubePlayer.getInfo("https://www.youtube.com/watch?v=eTykY2B0kEY&ab_channel=glopez5000");
+            audioBasicInfo = await youtubePlayer.getInfo(audioUrl);
 
             if (audioBasicInfo && audioBasicInfo.player_response.playabilityStatus.status) {
                 audioClip = {
