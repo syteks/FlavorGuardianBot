@@ -16,7 +16,6 @@ export class EmbedMessage {
      *
      * @param reactiveEmbedMessageTitle - The reactive embed message title that we want to retrieve.
      * @param serverID - The server ID that the reactive embed message is saved to.
-     *
      * @return {ReactiveEmbedMessage | null}
      */
     public getEmbedReactiveMessageByServerID(reactiveEmbedMessageTitle: string, serverID: string): ReactiveEmbedMessage | null {
@@ -29,7 +28,6 @@ export class EmbedMessage {
      * @param reactiveEmbedMessageTitle - The reactive message title, lika a custom id.
      * @param serverID - The server id that holds the power.
      * @param messageID - The embed message id that we want to change.
-     *
      * @return {ReactiveEmbedMessage|null}
      */
     public getEmbedReactiveMessage(reactiveEmbedMessageTitle: string, serverID: string, messageID: string): ReactiveEmbedMessage | null {

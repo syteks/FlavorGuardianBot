@@ -4,14 +4,14 @@ import { TYPES } from "../types";
 import { Bot } from "../classes/bot";
 import { Client } from "discord.js";
 import { CommandHandler } from "../handlers/command-handler";
-import { Memes } from "../commands/memes/memes";
+import { GetMeme } from "../commands/memes/get-meme";
 import { MemeService } from "../services/memes/meme-service";
 import { MongoDBClient } from "../utils/mongodb/client";
 import { AudioPlayer } from "../classes/audio-player";
 import { AddMeme } from "../commands/memes/add-meme";
 import { UpdateMeme } from "../commands/memes/update-meme";
 import { DeleteMeme } from "../commands/memes/delete-meme";
-import { GetMeme } from "../commands/memes/get-meme";
+import { Memes } from "../commands/memes/memes";
 import { Meme } from "../models/meme";
 import { EmbedMessage } from "../classes/embeds/embed-message";
 import { Commands } from "../commands/commands";
@@ -33,11 +33,11 @@ container.bind<ButtonHandler>(TYPES.ButtonHandler).to(ButtonHandler).inSingleton
 container.bind<EmbedMessage>(TYPES.EmbedMessage).to(EmbedMessage).inSingletonScope();
 
 // Meme related binding
-container.bind<Memes>(TYPES.Memes).to(Memes).inSingletonScope();
+container.bind<GetMeme>(TYPES.Memes).to(GetMeme).inSingletonScope();
 container.bind<AddMeme>(TYPES.AddMeme).to(AddMeme).inSingletonScope();
 container.bind<UpdateMeme>(TYPES.UpdateMeme).to(UpdateMeme).inSingletonScope();
 container.bind<DeleteMeme>(TYPES.DeleteMeme).to(DeleteMeme).inSingletonScope();
-container.bind<GetMeme>(TYPES.GetMeme).to(GetMeme).inSingletonScope();
+container.bind<Memes>(TYPES.GetMeme).to(Memes).inSingletonScope();
 
 // Service related binding
 container.bind<MemeService>(TYPES.MemeService).to(MemeService);

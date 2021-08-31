@@ -1,12 +1,12 @@
 import { Message } from "discord.js";
-import { Memes } from "../commands/memes/memes";
+import { GetMeme } from "../commands/memes/get-meme";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { AddMeme } from "../commands/memes/add-meme";
 import { UpdateMeme } from "../commands/memes/update-meme";
 import { DeleteMeme } from "../commands/memes/delete-meme";
 import { CommandHandler as CommandHandlerInterface } from "../interfaces/command-handler";
-import { GetMeme } from "../commands/memes/get-meme";
+import { Memes } from "../commands/memes/memes";
 import { Commands } from "../commands/commands";
 
 @injectable()
@@ -25,7 +25,7 @@ export class CommandHandler {
      *
      * @var {Memes}
      */
-    private memes: Memes
+    private memes: GetMeme
 
     /**
      * Instantiate the message responder.
@@ -38,11 +38,11 @@ export class CommandHandler {
      * @param commands - Get a list of all available commands.
      */
     constructor(
-        @inject(TYPES.Memes) memes: Memes,
+        @inject(TYPES.Memes) memes: GetMeme,
         @inject(TYPES.AddMeme) addMeme: AddMeme,
         @inject(TYPES.UpdateMeme) updateMeme: UpdateMeme,
         @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme,
-        @inject(TYPES.GetMeme) getMeme: GetMeme,
+        @inject(TYPES.GetMeme) getMeme: Memes,
         @inject(TYPES.Commands) commands: Commands
     ) {
         this.availableCommands = [

@@ -4,6 +4,7 @@ import { MemeService } from "../../services/memes/meme-service";
 import { TYPES } from "../../types";
 import { CommandHandler } from "../../interfaces/command-handler";
 import { Meme } from "../../models/meme";
+import { validateURL } from "ytdl-core";
 
 @injectable()
 export class UpdateMeme implements CommandHandler {
@@ -37,33 +38,44 @@ export class UpdateMeme implements CommandHandler {
      * @return {Promise<Message | Message[]>}
      */
     action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
-        if (commandParameters.length != 3 || !commandParameters[0] || !commandParameters[1] || !commandParameters[2]) {
-            return message.channel.send(`Expected 2 parameter, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [url]"`)
+        // Validate the amount of parameters given, we only accept 2 or 3.
+        if (commandParameters.length < 2 || commandParameters.length > 3) {
+            return message.channel.send(`Expected minimum 2 parameters or a maximum of 3 parameters, ${commandParameters.length} parameters given. The structure is "updateMeme [key|name] [new_key|new_name](optional) [url]"`)
+        }
+
+        // Validate the url of the last parameter, which should always be the new URL.
+        if (!validateURL(commandParameters[commandParameters.length - 1] ?? '')) {
+            return message.channel.send(`The given URL was not valid, please check if the URL is a valid sound/video/song, if it still doesn't work start crying, because the creator will do nothing about it.`);
         }
 
         let meme: Meme;
 
-        // This is our new meme object, with the new [url]
-        if (commandParameters.length == 3) {
+        // This is our new meme object, with the new [url].
+        if (commandParameters.length === 3) {
             meme = new Meme(commandParameters[1], commandParameters[2]);
         } else {
             meme = new Meme(commandParameters[0], commandParameters[1]);
         }
 
-        // Check if the given parameter the meme exists
+        // Check if the given parameter the meme exists.
         return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
-            // The meme that we want to delete doesn't exist
+            // The meme that we want to delete doesn't exist.
             if (!existingMeme) {
                 return message.channel.send(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
-            // Assign the id found for the meme to the new model
+            // Assign the id found for the meme to the new model.
             meme._id = existingMeme._id;
 
-            this.memeService.updateMeme(existingMeme._id ?? '', meme);
+            this.memeService.updateMeme(existingMeme._id ?? '', meme).then(() => {
+                return message.channel.send('The meme was successfully updated.')
+            }).catch((error: Error) => {
+                console.log(error);
+
+                return message.channel.send('There was a error while processing the command. Please call for help.');
+            });
 
             return Promise.resolve(message);
         });
     }
-
 }
