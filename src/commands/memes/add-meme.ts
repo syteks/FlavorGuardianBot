@@ -4,6 +4,7 @@ import { TYPES } from "../../types";
 import { MemeService } from "../../services/memes/meme-service";
 import { CommandHandler } from "../../interfaces/command-handler";
 import { Meme } from "../../models/meme";
+import { validateURL } from "ytdl-core";
 
 @injectable()
 export class AddMeme implements CommandHandler {
@@ -42,7 +43,11 @@ export class AddMeme implements CommandHandler {
             return message.channel.send(`Expected 2 parameters, ${commandParameters.length} parameter(s) given. The structure is "addMeme [key|name] [url]"`)
         }
 
-        // @todo Check if the given url is valid
+        // Validate the url of the last parameter, which should always be the new URL.
+        if (!validateURL(commandParameters[commandParameters.length - 1] ?? '')) {
+            return message.channel.send(`The given URL was not valid, please check if the URL is a valid sound/video/song, if it still doesn't work start crying, because the creator will do nothing about it.`);
+        }
+
         let meme: Meme;
 
         // Declare ourselves a new meme object to be inserted into the database
@@ -55,7 +60,12 @@ export class AddMeme implements CommandHandler {
                 return message.channel.send(`There is already a clip associated with the given key "${meme.key}"`)
             }
 
-            this.memeService.createMeme(meme);
+            this.memeService.createMeme(meme).then(() => {
+                return message.channel.send('The meme was successfully updated.')
+            })
+                .catch(() => {
+                    return message.channel.send("There was an error adding your meme, please try again later or don't, I do not really care #NotPaidForThis.")
+                });
 
             return Promise.resolve(message);
         });

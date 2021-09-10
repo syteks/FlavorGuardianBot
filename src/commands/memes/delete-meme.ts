@@ -49,7 +49,9 @@ export class DeleteMeme implements CommandHandler {
                 return message.channel.send(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
-            this.memeService.deleteMeme(existingMeme._id || '');
+            this.memeService.deleteMeme(existingMeme._id || '').then(() => {
+                return message.channel.send(`The meme with the key "${existingMeme.key}" was successfully deleted.`);
+            });
 
             return Promise.resolve(message);
         });

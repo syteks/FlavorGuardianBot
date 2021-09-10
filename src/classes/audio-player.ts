@@ -145,10 +145,13 @@ export class AudioPlayer {
                     // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
                     message.channel.send(richEmbedMessage);
 
-                    // Keep the connection in a dispatcher to know when the bot is done outputting stream
+                    // Keep the connection in a dispatcher to know when the bot is done outputting stream.
                     dispatcher = connection.play(audioClip.audioClip, {volume: 0.25});
 
-                    // Look into the list for the next audio to play
+                    // This will handle the forcefully closed connection, so it doesn't bug the system.
+                    this.handleForceDisconnection(message, connection);
+
+                    // Look into the list for the next audio to play.
                     return this.dispatchNextAudio(message, connection, dispatcher);
                 })
                 .catch((_error: string) => {
@@ -168,8 +171,8 @@ export class AudioPlayer {
      * @param connection - The connection of the bot, that we will use to disconnect the bot.
      * @param dispatcher - We listen to the play stream dispatcher on end we go and fetch the next audio in the list.
      */
-    public dispatchNextAudio(message: Message, connection: VoiceConnection, dispatcher: StreamDispatcher) {
-        dispatcher.once("finish", () => {
+    public dispatchNextAudio(message: Message, connection: VoiceConnection, dispatcher: StreamDispatcher): void {
+        dispatcher.on('finish', () => {
             // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
             dispatcher.destroy();
 
@@ -196,7 +199,7 @@ export class AudioPlayer {
      *
      * @param audioClip - It is the url that we want to add to the list
      */
-    public addAudioToList(audioClip: string) {
+    public addAudioToList(audioClip: string): void {
         if (audioClip) {
             this.clearTimeout();
             this.listAudioClip.push(audioClip);
@@ -206,9 +209,51 @@ export class AudioPlayer {
     /**
      * Clear the inactivity timeout if it has a set value.
      */
-    private clearTimeout() {
+    private clearTimeout(): void {
         // Clear out the inactivity timer if there is a audio in the list.
         clearTimeout(<Timeout> this.inactivityTimeoutId);
         this.inactivityTimeoutId = null;
+    }
+
+    /**
+     *
+     * @param message
+     * @param connection
+     */
+    private handleForceDisconnection(message: Message, connection: VoiceConnection): void {
+        connection.on('disconnect', () => {
+            // If the attribute is playing of the audio player is to true, it means there was a clip playing when it was
+            // ABRUPTLY interrupted, the person who disconnected the bot has no respect what so ever.
+            if (this.isPlaying) {
+                // Initiate a new embed rich message.
+                let richEmbedMessage: EmbedRichMessage;
+                richEmbedMessage = new EmbedRichMessage();
+
+                // Set a troll color.
+                richEmbedMessage.setColor("DARK_VIVID_PINK");
+
+                // Add a field asking who the fuck had the balls to disconnect the bot.
+                richEmbedMessage.addFields([
+                    {
+                        "name": 'WHO THE FUCK DARED TO DISCONNECT ME!!!',
+                        "value": 'There will be consequences to your action boy.',
+                        "inline": true
+                    }
+                ]);
+
+                // Send the embed meme message to the channel where the command was invoked.
+                message.channel.send(richEmbedMessage);
+
+                // Clear the audio clip list.
+                this.listAudioClip = [];
+
+                // If this is not set to false, we can not recall the bot, because it will always think the bot
+                // is currently playing, because it never had the chance to end the song and properly disconnect.
+                this.isPlaying = false;
+
+                // Play a great 3 second audio in order to calm the situation.
+                this.playAudio(message, "https://youtu.be/bFc2EDsGf1w");
+            }
+        });
     }
 }

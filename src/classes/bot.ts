@@ -87,8 +87,8 @@ export class Bot {
             // Process the command
             this.commandHandler.handle(message).then(() => {
                 // Do any action after the message
-            }).catch(() => {
-                // @todo: catch errors and do something about it!
+            }).catch((error) => {
+                console.log(error);
             })
         });
     }
