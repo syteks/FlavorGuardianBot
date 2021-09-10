@@ -61,7 +61,7 @@ export class AddMeme implements CommandHandler {
             }
 
             this.memeService.createMeme(meme).then(() => {
-                return message.channel.send('The meme was successfully updated.')
+                return message.channel.send(`The meme was successfully added with the key name "${meme.key}".`)
             })
                 .catch(() => {
                     return message.channel.send("There was an error adding your meme, please try again later or don't, I do not really care #NotPaidForThis.")
