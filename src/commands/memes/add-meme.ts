@@ -18,7 +18,7 @@ export class AddMeme implements CommandHandler {
     /**
      * Contains the database service that we will use in order to apply CRUD logic to our memes.
      *
-     * @private MemeService
+     * @var MemeService
      */
     private memeService: MemeService;
 

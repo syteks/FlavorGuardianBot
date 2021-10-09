@@ -9,7 +9,7 @@ import Timeout = NodeJS.Timeout;
 @injectable()
 export class AudioPlayer {
     /**
-     * Defines if the juke box is currently playing a song
+     * Defines if the jukebox is currently playing a song
      *
      * @var Boolean
      */
@@ -37,11 +37,25 @@ export class AudioPlayer {
     private inactivityTimeoutId: Timeout|number|null;
 
     /**
-     * The current connection
+     * The current StreamDispatcher, or aka bot's voice.
      *
      * @var Connection|null
      */
     private currentDispatcher: StreamDispatcher|null;
+
+    /**
+     * The current connection.
+     *
+     * @var VoiceConnection|null
+     */
+    private currentConnection: VoiceConnection|null;
+
+    /**
+     * Tells us if the bot was forcefully disconnected.
+     *
+     * @var boolean
+     */
+    private forcedDisconnection: boolean;
 
     /**
      * Setup the audio clip
@@ -50,12 +64,15 @@ export class AudioPlayer {
         this.currentAudioClip = null;
         this.inactivityTimeoutId = null;
         this.isPlaying = false;
+        this.forcedDisconnection = true;
         this.listAudioClip = [];
         this.currentDispatcher = null;
+        this.currentConnection = null;
     }
 
     /**
      * We process the given url and transform it into a AudioClip that we can check if the audio is valid before making the bot join.
+     *
      * @param audioUrl - The audio url that we want to process
      * @return {Promise<AudioClip>}
      */
@@ -93,6 +110,7 @@ export class AudioPlayer {
 
     /**
      * We get the audioTitle from the audioClip.
+     *
      * @return {string | null}
      */
     public getAudioTitle(): string | null {
@@ -101,6 +119,7 @@ export class AudioPlayer {
 
     /**
      * Get the audioClip
+     *
      * @return {Readable | null}
      */
     public getAudioClip(): Readable | null {
@@ -109,6 +128,7 @@ export class AudioPlayer {
 
     /**
      * Get the AudioClips in the list
+     *
      * @return {Array<AudioClip> | null}
      */
     public getAudioClipList(): Array<string> | null {
@@ -117,7 +137,8 @@ export class AudioPlayer {
 
     /**
      * Pauses the current played audio.
-     * @return void
+     *
+     * @return {void}
      */
     public pauseAudio(): void {
         this.currentDispatcher?.pause(true);
@@ -125,7 +146,8 @@ export class AudioPlayer {
 
     /**
      * Resumes the current played audio.
-     * @return void
+     *
+     * @return {void}
      */
     public resumeAudio(): void {
         this.currentDispatcher?.resume();
@@ -143,11 +165,11 @@ export class AudioPlayer {
 
     /**
      * When the bot is done singing a video it sets the status to currently playing at false and will play the next url in the list.
+     *
      * @param message - We will use this to play audio if the list is not empty.
-     * @param connection - The connection of the bot, that we will use to disconnect the bot.
-     * @return void
+     * @return {void}
      */
-    public dispatchNextAudio(message: Message, connection: VoiceConnection): void {
+    public dispatchNextAudio(message: Message): void {
         this.currentDispatcher?.on('finish', () => {
             // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
             this.currentDispatcher?.destroy();
@@ -164,7 +186,7 @@ export class AudioPlayer {
                 this.playAudio(message, nextAudio);
             } else {
                 this.inactivityTimeoutId = setTimeout(() => {
-                    connection.disconnect();
+                    this.currentConnection?.disconnect();
                 }, 15 * 60 * 30);
             }
         });
@@ -172,8 +194,9 @@ export class AudioPlayer {
 
     /**
      * Adds a url or a youtube clip to the list and will try to play it, it is the jukebox q:list
+     *
      * @param audioClip - It is the url that we want to add to the list
-     * @return void
+     * @return {void}
      */
     public addAudioToList(audioClip: string): void {
         if (audioClip) {
@@ -184,8 +207,33 @@ export class AudioPlayer {
     }
 
     /**
+     * Disconnect the bot from the channel.
+     *
+     * @return {void}
+     */
+    public disconnect(): void {
+        // Set the force disconnection to false, so it doesn't come back and play the easter egg.
+        this.forcedDisconnection = false;
+
+        this.clearList();
+
+        // Disconnect the voice connection of the bot.
+        this.currentConnection?.disconnect();
+    }
+
+    /**
+     * Clear the playlist.
+     *
+     * @return {void}
+     */
+    public clearList(): void {
+        this.listAudioClip = [];
+    }
+
+    /**
      * Clear the inactivity timeout if it has a set value.
-     * @return void
+     *
+     * @return {void}
      */
     private clearTimeout(): void {
         // Clear out the inactivity timer if there is a audio in the list.
@@ -195,15 +243,15 @@ export class AudioPlayer {
 
     /**
      * Handles the force disconnection, when the put is disconnected while he is playing an audio.
+     *
      * @param message - The message sent by the user used to do actions on the targeted channel.
-     * @param connection - The bot connection, that we can manipulate.
-     * @return void
+     * @return {void}
      */
-    private handleForceDisconnection(message: Message, connection: VoiceConnection): void {
-        connection.on('disconnect', () => {
+    private handleForceDisconnection(message: Message): void {
+        this.currentConnection?.on('disconnect', () => {
             // If the attribute is playing of the audio player is to true, it means there was a clip playing when it was
             // ABRUPTLY interrupted, the person who disconnected the bot has no respect what so ever.
-            if (this.isPlaying) {
+            if (this.isPlaying && this.forcedDisconnection) {
                 // Initiate a new embed rich message.
                 let richEmbedMessage: EmbedRichMessage;
                 richEmbedMessage = new EmbedRichMessage();
@@ -233,20 +281,26 @@ export class AudioPlayer {
                 // Play a great 3 second audio in order to calm the situation.
                 this.playAudio(message, "https://youtu.be/bFc2EDsGf1w");
             }
+
+            // Reset the forced disconnection to true.
+            this.forcedDisconnection = true;
         });
     }
 
     /**
      * Handle the audio play, were we process the clip url and play the audio.
      * It also handle another bunch of shit but I am not paid to tell you what so figure it out.
+     *
      * @param message - The message sent by the user that we can use to respond.
      * @param clipUrl - The clip url to play.
-     * @return void
+     * @return {void}
      */
     private handleAudioPlay(message: Message, clipUrl: string): void {
         this.processAudioUrl(clipUrl).then((audioClip: AudioClip) => {
             if (audioClip.audioTitle) {
                 message.member?.voice.channel?.join().then((connection: VoiceConnection) => {
+                    this.currentConnection = connection;
+
                     this.isPlaying = true;
 
                     this.clearTimeout();
@@ -271,13 +325,13 @@ export class AudioPlayer {
                     message.channel.send(richEmbedMessage);
 
                     // Keep the connection in a dispatcher to know when the bot is done outputting stream.
-                    this.currentDispatcher = connection.play(audioClip.audio, {volume: 0.25});
+                    this.currentDispatcher = this.currentConnection?.play(audioClip.audio, {volume: 0.25});
 
                     // This will handle the forcefully closed connection, so it doesn't bug the system.
-                    this.handleForceDisconnection(message, connection);
+                    this.handleForceDisconnection(message);
 
                     // Look into the list for the next audio to play.
-                    return this.dispatchNextAudio(message, connection);
+                    return this.dispatchNextAudio(message);
                 })
                     .catch((_error: string) => {
                         // @todo: catch errors and do something about it!
@@ -293,9 +347,10 @@ export class AudioPlayer {
     /**
      * Handles the newly added clip to the audio player, meaning when somebody invokes the play audio we
      * check if the jukebox is playing we add the clip to the list, if not we play the clip.
+     *
      * @param message - The message sent by the user that we can use to respond.
      * @param clip - The clip that we want to play.
-     * @return void
+     * @return {void}
      */
     private handleNewlySentClip(message: Message, clip: string): void {
         if (this.isPlaying) {

@@ -12,7 +12,7 @@ export class Pause implements CommandHandler {
      *
      * @var string
      */
-    public readonly regexp = 's|stop|pause|hold';
+    public readonly regexp = 's|stop|pause';
 
     /**
      * The server jukebox, this special variable helps us play some shitty music.
@@ -33,6 +33,13 @@ export class Pause implements CommandHandler {
         this.audioPlayer = audioPlayer;
     }
 
+    /**
+     * This will define the action of the command.
+     * This function will process the input of the user.
+     *
+     * @param message - Message sent by the user in order to manipulate the channel it was sent from.
+     * @param _commandParameters - Ignore
+     */
     action(message: Message, _commandParameters: string[]): Promise<Message | Message[]> {
         this.audioPlayer.pauseAudio();
 

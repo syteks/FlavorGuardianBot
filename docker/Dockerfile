@@ -5,7 +5,7 @@ LABEL Maintainer="Andrew H. <andrewgmholmes@gmail.com>" \
       VERSION="0.1.0"
 
 # ENV
-ENV NODE_ENV prod
+ENV NODE_ENV dev
 ENV NODE_PORT 1337
 
 # Create the app directory

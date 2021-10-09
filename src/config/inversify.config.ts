@@ -38,11 +38,11 @@ container.bind<ButtonHandler>(TYPES.ButtonHandler).to(ButtonHandler).inSingleton
 container.bind<EmbedMessage>(TYPES.EmbedMessage).to(EmbedMessage).inSingletonScope();
 
 // Meme related binding
-container.bind<GetMeme>(TYPES.Memes).to(GetMeme).inSingletonScope();
+container.bind<Memes>(TYPES.Memes).to(Memes).inSingletonScope();
 container.bind<AddMeme>(TYPES.AddMeme).to(AddMeme).inSingletonScope();
 container.bind<UpdateMeme>(TYPES.UpdateMeme).to(UpdateMeme).inSingletonScope();
 container.bind<DeleteMeme>(TYPES.DeleteMeme).to(DeleteMeme).inSingletonScope();
-container.bind<Memes>(TYPES.GetMeme).to(Memes).inSingletonScope();
+container.bind<GetMeme>(TYPES.GetMeme).to(GetMeme).inSingletonScope();
 
 // Audio player related binding
 container.bind<Play>(TYPES.Play).to(Play).inSingletonScope();

@@ -1,11 +1,11 @@
-import { Message } from "discord.js";
-import { GetMeme } from "../commands/memes/get-meme";
 import { inject, injectable } from "inversify";
+import { Message } from "discord.js";
+import { CommandHandler as CommandHandlerInterface } from "../interfaces/command-handler";
 import { TYPES } from "../types";
 import { AddMeme } from "../commands/memes/add-meme";
+import { GetMeme } from "../commands/memes/get-meme";
 import { UpdateMeme } from "../commands/memes/update-meme";
 import { DeleteMeme } from "../commands/memes/delete-meme";
-import { CommandHandler as CommandHandlerInterface } from "../interfaces/command-handler";
 import { Memes } from "../commands/memes/memes";
 import { Commands } from "../commands/commands";
 import { Play } from "../commands/audio-player/play";
@@ -23,83 +23,116 @@ export class CommandHandler {
      *
      * @var {Array<Commands>}
      */
-    private availableCommands: Array<CommandHandlerInterface>;
+    private availableCommands!: Array<CommandHandlerInterface>;
 
     /**
      * This variable will be used to check if the command given is a valid clip found in the storage.
      *
      * @var {Memes}
      */
-    private memes: GetMeme
+    @inject(TYPES.Memes)
+    private memes!: Memes;
 
     /**
-     * Instantiate the message responder.
+     * This variable will be used to check if the command given is a valid clip found in the storage.
      *
-     * @param memes - Plays a meme audio.
-     * @param addMeme - Add a meme to the database.
-     * @param updateMeme - Update a meme from the database.
-     * @param deleteMeme - Delete a meme from the database.
-     * @param getMeme - Get a meme or memes from the database.
-     * @param play - Play a clip
-     * @param pause - Pause the jukebox
-     * @param resume
-     * @param leave
-     * @param clear
-     * @param commands - Get a list of all available commands.
+     * @var {AddMeme}
      */
-    // @todo : Yo This shit is going to start to be disgusting find another solution
-    // @todo : Also seems like a problem for me in the future so fuck you Future Sergiu.
-    constructor(
-        @inject(TYPES.Memes) memes: GetMeme,
-        @inject(TYPES.AddMeme) addMeme: AddMeme,
-        @inject(TYPES.UpdateMeme) updateMeme: UpdateMeme,
-        @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme,
-        @inject(TYPES.GetMeme) getMeme: Memes,
-        @inject(TYPES.Play) play: Play,
-        @inject(TYPES.Pause) pause: Pause,
-        @inject(TYPES.Resume) resume: Resume,
-        @inject(TYPES.Leave) leave: Leave,
-        @inject(TYPES.Clear) clear: Clear,
-        @inject(TYPES.Commands) commands: Commands
-    ) {
-        this.availableCommands = [
-            memes,
-            addMeme,
-            updateMeme,
-            deleteMeme,
-            getMeme,
-            play,
-            pause,
-            resume,
-            leave,
-            clear,
-            commands
-        ];
+    @inject(TYPES.AddMeme)
+    private  addMeme!: AddMeme;
 
-        // The meme's list
-        this.memes = memes;
-    }
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {UpdateMeme}
+     */
+    @inject(TYPES.UpdateMeme)
+    private updateMeme!: UpdateMeme;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {DeleteMeme}
+     */
+    @inject(TYPES.DeleteMeme)
+    private deleteMeme!: DeleteMeme;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {GetMeme}
+     */
+    @inject(TYPES.GetMeme)
+    private getMeme!: GetMeme;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Play}
+     */
+    @inject(TYPES.Play)
+    private play!: Play;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Pause}
+     */
+    @inject(TYPES.Pause)
+    private pause!: Pause;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Resume}
+     */
+    @inject(TYPES.Resume)
+    private resume!: Resume;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Leave}
+     */
+    @inject(TYPES.Leave)
+    private leave!: Leave;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Clear}
+     */
+    @inject(TYPES.Clear)
+    private clear!: Clear;
+
+    /**
+     * This variable will be used to check if the command given is a valid clip found in the storage.
+     *
+     * @var {Commands}
+     */
+    @inject(TYPES.Commands)
+    private commands!: Commands;
 
     /**
      * Is this the intended command.
      *
      * @param stringToSearch - We check if it was the intended command given by the user.
      * @param regexp - The command regex that identifies the commands and a way to check for the intended command.
-     *
      * @return {boolean}
      */
     private static isIntendedCommand(stringToSearch: string, regexp: string): boolean {
-        return stringToSearch.search(regexp) >= 0;
+        return new RegExp(`\\b(${regexp})\\b`, 'g').test(stringToSearch);
     }
 
     /**
      * Try to execute the command.
      * 
      * @param message - The users message, that we will check if it was a intended bot command.
-     *
      * @return {Promise<Message | Message[]>}
      */
     public handle(message: Message): Promise<Message | Message[]> {
+        this.handleAvailableCommands();
+
         // Separate the command from the parameters
         let userInput: string[],
             originalCommand: string,
@@ -125,8 +158,29 @@ export class CommandHandler {
             return command.action(message, commandParameters);
         }
 
-        return this.memes.findClip(originalCommand).then((commandClip: string | null) => {
-            return commandClip ? this.memes.action(message, commandClip) : message.channel.send('Command has not been found.');
+        return this.getMeme.findClip(originalCommand).then((commandClip: string | null) => {
+            return commandClip ? this.getMeme.action(message, commandClip) : message.channel.send('Command has not been found.');
         });
+    }
+
+    /**
+     * Handles the available commands, basically sets the variable that has the available commands classes.
+     *
+     * @return {void}
+     */
+    private handleAvailableCommands(): void {
+        this.availableCommands = [
+            this.memes,
+            this.addMeme,
+            this.updateMeme,
+            this.deleteMeme,
+            this.getMeme,
+            this.play,
+            this.pause,
+            this.resume,
+            this.leave,
+            this.clear,
+            this.commands
+        ];
     }
 }
