@@ -18,6 +18,11 @@ import { Commands } from "../commands/commands";
 import { MoreGetMemes } from "../classes/buttons/more-get-memes";
 import { LessGetMemes } from "../classes/buttons/less-get-memes";
 import { ButtonHandler } from "../handlers/button-handler";
+import { Play } from "../commands/audio-player/play";
+import { Pause } from "../commands/audio-player/pause";
+import { Leave } from "../commands/audio-player/leave";
+import { Clear } from "../commands/audio-player/clear";
+import { Resume } from "../commands/audio-player/resume";
 
 let container = new Container();
 let client = new Client();
@@ -38,6 +43,14 @@ container.bind<AddMeme>(TYPES.AddMeme).to(AddMeme).inSingletonScope();
 container.bind<UpdateMeme>(TYPES.UpdateMeme).to(UpdateMeme).inSingletonScope();
 container.bind<DeleteMeme>(TYPES.DeleteMeme).to(DeleteMeme).inSingletonScope();
 container.bind<Memes>(TYPES.GetMeme).to(Memes).inSingletonScope();
+
+// Audio player related binding
+container.bind<Play>(TYPES.Play).to(Play).inSingletonScope();
+container.bind<Pause>(TYPES.Pause).to(Pause).inSingletonScope();
+container.bind<Resume>(TYPES.Resume).to(Resume).inSingletonScope();
+container.bind<Leave>(TYPES.Leave).to(Leave).inSingletonScope();
+container.bind<Clear>(TYPES.Clear).to(Clear).inSingletonScope();
+
 
 // Service related binding
 container.bind<MemeService>(TYPES.MemeService).to(MemeService);

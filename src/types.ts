@@ -20,6 +20,13 @@ export const TYPES = {
     DeleteMeme: Symbol("DeleteMeme"),
     GetMeme: Symbol("GetMeme"),
 
+    // Audio player related symbols
+    Play: Symbol("Play"),
+    Pause: Symbol("Pause"),
+    Resume: Symbol("Resume"),
+    Leave: Symbol("Leave"),
+    Clear: Symbol("Clear"),
+
     // Services
     MemeService: Symbol("MemeService"),
     MongoDBClient: Symbol('MongoDBClient'),

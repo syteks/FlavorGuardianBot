@@ -10,6 +10,8 @@ import { validateURL } from "ytdl-core";
 export class AddMeme implements CommandHandler {
     /**
      * Regex for the command label.
+     *
+     * @var string
      */
     public readonly regexp = 'addMeme|addmeme';
 

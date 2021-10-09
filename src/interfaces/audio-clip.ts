@@ -14,5 +14,5 @@ export interface AudioClip {
     /**
      * Contains the playable audio.
      */
-    audioClip: Readable
+    audio: Readable
 }

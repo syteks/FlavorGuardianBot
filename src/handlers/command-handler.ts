@@ -8,6 +8,11 @@ import { DeleteMeme } from "../commands/memes/delete-meme";
 import { CommandHandler as CommandHandlerInterface } from "../interfaces/command-handler";
 import { Memes } from "../commands/memes/memes";
 import { Commands } from "../commands/commands";
+import { Play } from "../commands/audio-player/play";
+import { Pause } from "../commands/audio-player/pause";
+import { Resume } from "../commands/audio-player/resume";
+import { Leave } from "../commands/audio-player/leave";
+import { Clear } from "../commands/audio-player/clear";
 
 @injectable()
 export class CommandHandler {
@@ -35,14 +40,26 @@ export class CommandHandler {
      * @param updateMeme - Update a meme from the database.
      * @param deleteMeme - Delete a meme from the database.
      * @param getMeme - Get a meme or memes from the database.
+     * @param play - Play a clip
+     * @param pause - Pause the jukebox
+     * @param resume
+     * @param leave
+     * @param clear
      * @param commands - Get a list of all available commands.
      */
+    // @todo : Yo This shit is going to start to be disgusting find another solution
+    // @todo : Also seems like a problem for me in the future so fuck you Future Sergiu.
     constructor(
         @inject(TYPES.Memes) memes: GetMeme,
         @inject(TYPES.AddMeme) addMeme: AddMeme,
         @inject(TYPES.UpdateMeme) updateMeme: UpdateMeme,
         @inject(TYPES.DeleteMeme) deleteMeme: DeleteMeme,
         @inject(TYPES.GetMeme) getMeme: Memes,
+        @inject(TYPES.Play) play: Play,
+        @inject(TYPES.Pause) pause: Pause,
+        @inject(TYPES.Resume) resume: Resume,
+        @inject(TYPES.Leave) leave: Leave,
+        @inject(TYPES.Clear) clear: Clear,
         @inject(TYPES.Commands) commands: Commands
     ) {
         this.availableCommands = [
@@ -51,6 +68,11 @@ export class CommandHandler {
             updateMeme,
             deleteMeme,
             getMeme,
+            play,
+            pause,
+            resume,
+            leave,
+            clear,
             commands
         ];
 

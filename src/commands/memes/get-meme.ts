@@ -133,13 +133,8 @@ export class GetMeme implements CommandHandler {
                 return message.channel.send("The given clip was not found.");
             }
 
-            // If the bot is already playing, we just add the clip url to the list.
-            if (this.audioPlayer.isPlaying) {
-                this.audioPlayer.addAudioToList(clipUrl);
-            } else {
-                // Force the jukebox into submission like a lil bitch to play the meme clip.
-                this.audioPlayer.playAudio(message, clipUrl);
-            }
+            // Play the meme.
+            this.audioPlayer.playAudio(message, clipUrl);
 
             return Promise.resolve(message);
         });

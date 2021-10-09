@@ -16,12 +16,12 @@
   },
   {
     "name": "getMeme",
-    "value": "Get a reactive list with the available memes in the database.",
+    "value": "Play a random meme. We can also specify a meme to play.",
     "inline": false
   },
   {
     "name": "memes {meme-key} OR meme-key",
-    "value": "Play a random meme. We can also specify a meme to play.",
+    "value": "Get a reactive list with the available memes in the database.",
     "inline": false
   },
   {
