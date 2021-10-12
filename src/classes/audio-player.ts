@@ -215,6 +215,8 @@ export class AudioPlayer {
         // Set the force disconnection to false, so it doesn't come back and play the easter egg.
         this.forcedDisconnection = false;
 
+        this.isPlaying = false;
+
         this.clearList();
 
         // Disconnect the voice connection of the bot.
