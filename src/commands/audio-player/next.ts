@@ -1,17 +1,17 @@
-import { Message } from "discord.js";
 import { inject, injectable } from "inversify";
 import { CommandHandler } from "../../interfaces/command-handler";
-import { TYPES } from "../../types";
 import { AudioPlayer } from "../../classes/audio-player";
+import { TYPES } from "../../types";
+import { Message } from "discord.js";
 
 @injectable()
-export class Play implements CommandHandler {
+export class Next implements CommandHandler {
     /**
      * Regex for the command label.
      *
      * @var string
      */
-    public readonly regexp = 'p|play';
+    public readonly regexp = 'n|next|niext';
 
     /**
      * The server jukebox, this special variable helps us play some shitty music.
@@ -37,18 +37,13 @@ export class Play implements CommandHandler {
      * This function will process the input of the user.
      *
      * @param message - Message sent by the user in order to manipulate the channel from where it came.
-     * @param commandParameters - Contains all the url to add to the jukebox.
+     * @param _commandParameters
      * @return Promise<Message|Message[]>
      */
-    action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
-        if (commandParameters.length > 1) {
-            message.channel.send('One url at a time por favor ! Or a playlist url :)');
-
-            return Promise.resolve(message);
-        }
-
-        this.audioPlayer.handle(message, commandParameters[0]);
+    action(message: Message, _commandParameters: string[]): Promise<Message | Message[]> {
+        this.audioPlayer.nextAudio();
 
         return Promise.resolve(message);
     }
+
 }

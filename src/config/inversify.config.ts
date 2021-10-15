@@ -23,6 +23,7 @@ import { Pause } from "../commands/audio-player/pause";
 import { Leave } from "../commands/audio-player/leave";
 import { Clear } from "../commands/audio-player/clear";
 import { Resume } from "../commands/audio-player/resume";
+import { Next } from "../commands/audio-player/next";
 
 let container = new Container();
 let client = new Client();
@@ -48,6 +49,7 @@ container.bind<GetMeme>(TYPES.GetMeme).to(GetMeme).inSingletonScope();
 container.bind<Play>(TYPES.Play).to(Play).inSingletonScope();
 container.bind<Pause>(TYPES.Pause).to(Pause).inSingletonScope();
 container.bind<Resume>(TYPES.Resume).to(Resume).inSingletonScope();
+container.bind<Next>(TYPES.Next).to(Next).inSingletonScope();
 container.bind<Leave>(TYPES.Leave).to(Leave).inSingletonScope();
 container.bind<Clear>(TYPES.Clear).to(Clear).inSingletonScope();
 

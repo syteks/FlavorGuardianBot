@@ -24,6 +24,7 @@ export const TYPES = {
     Play: Symbol("Play"),
     Pause: Symbol("Pause"),
     Resume: Symbol("Resume"),
+    Next: Symbol("Next"),
     Leave: Symbol("Leave"),
     Clear: Symbol("Clear"),
 

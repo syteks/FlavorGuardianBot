@@ -13,6 +13,7 @@ import { Pause } from "../commands/audio-player/pause";
 import { Resume } from "../commands/audio-player/resume";
 import { Leave } from "../commands/audio-player/leave";
 import { Clear } from "../commands/audio-player/clear";
+import { Next } from "../commands/audio-player/next";
 
 @injectable()
 export class CommandHandler {
@@ -88,6 +89,14 @@ export class CommandHandler {
      */
     @inject(TYPES.Resume)
     private resume!: Resume;
+
+    /**
+     * This variable will be used to skip a audio from the list.
+     *
+     * @var {Next}
+     */
+    @inject(TYPES.Next)
+    private next!: Next;
 
     /**
      * This variable will be used to check if the command given is a valid clip found in the storage.
@@ -178,6 +187,7 @@ export class CommandHandler {
             this.play,
             this.pause,
             this.resume,
+            this.next,
             this.leave,
             this.clear,
             this.commands

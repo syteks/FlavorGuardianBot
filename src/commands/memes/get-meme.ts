@@ -134,7 +134,7 @@ export class GetMeme implements CommandHandler {
             }
 
             // Play the meme.
-            this.audioPlayer.playAudio(message, clipUrl);
+            this.audioPlayer.handle(message, clipUrl);
 
             return Promise.resolve(message);
         });
