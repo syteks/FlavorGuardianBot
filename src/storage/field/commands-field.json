@@ -28,5 +28,30 @@
     "name": "commands",
     "value": "Get a list of all available commands.",
     "inline": false
+  },
+  {
+    "name": "play",
+    "value": "Play a audio for a given spotify url or youtube url also accepts playlist but not youtube mix.",
+    "inline": false
+  },
+  {
+    "name": "pause",
+    "value": "Pause's the current played audio.",
+    "inline": false
+  },
+  {
+    "name": "leave",
+    "value": "Gracefully leaves the bot.",
+    "inline": false
+  },
+  {
+    "name": "clear",
+    "value": "Clear's the jukebox list.",
+    "inline": false
+  },
+  {
+    "name": "next",
+    "value": "Plays the next audio in the jukebox queue.",
+    "inline": false
   }
 ]

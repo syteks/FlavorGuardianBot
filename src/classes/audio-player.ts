@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { Readable } from "stream";
 import youtubePlayer, { videoInfo } from "ytdl-core";
+import youtubePlaylist, { Result } from "ytpl";
 import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
 import { AudioClip } from "../interfaces/audio-clip";
 import { EmbedRichMessage } from "./embeds/embed-rich-message";
@@ -11,56 +12,56 @@ export class AudioPlayer {
     /**
      * Defines if the jukebox is currently playing a song
      *
-     * @var Boolean
+     * @var {boolean}
      */
     public isPlaying: boolean;
 
     /**
      * The audio clip that will be returned, to play.
      *
-     * @var AudioClip|null
+     * @var {AudioClip|null}
      */
     private currentAudioClip: AudioClip|null;
 
     /**
      * This is the audio clip list that we can use as a Jukebox.
      *
-     * @var Array<AudioClip>|null
+     * @var {Array<AudioClip>|null}
      */
     private listAudioClip: Array<string>;
 
     /**
      * Keeps the inactivity timer.
      *
-     * @var Timeout|number|null
+     * @var {Timeout|number|null}
      */
     private inactivityTimeoutId: Timeout|number|null;
 
     /**
      * The current StreamDispatcher, or aka bot's voice.
      *
-     * @var Connection|null
+     * @var {Connection|null}
      */
     private currentDispatcher: StreamDispatcher|null;
 
     /**
      * The current connection.
      *
-     * @var VoiceConnection|null
+     * @var {VoiceConnection|null}
      */
     private currentConnection: VoiceConnection|null;
 
     /**
      * Tells us if the bot was forcefully disconnected.
      *
-     * @var boolean
+     * @var {boolean}
      */
     private forcedDisconnection: boolean;
 
     /**
      * The received user message, that we will use to communicate with the user.
      *
-     * @var Message|null
+     * @var {Message|null}
      */
     private receivedMessage: Message|null;
 
@@ -68,22 +69,26 @@ export class AudioPlayer {
      * Setup the audio clip
      */
     constructor() {
+        this.isPlaying = false;
+
         this.currentAudioClip = null;
         this.inactivityTimeoutId = null;
-        this.isPlaying = false;
         this.forcedDisconnection = true;
         this.listAudioClip = [];
+
+        // Manipulate the bot connection and voice.
         this.currentDispatcher = null;
         this.currentConnection = null;
+
         this.receivedMessage = null;
     }
 
     /**
      * We get the audioTitle from the audioClip.
      *
-     * @return {string | null}
+     * @return {string|null}
      */
-    public getAudioTitle(): string | null {
+    public getAudioTitle(): string|null {
         return this.currentAudioClip?.audioTitle || null;
     }
 
@@ -92,7 +97,7 @@ export class AudioPlayer {
      *
      * @return {Readable | null}
      */
-    public getAudioClip(): Readable | null {
+    public getAudioClip(): Readable|null {
         return this.currentAudioClip?.audio || null;
     }
 
@@ -101,7 +106,7 @@ export class AudioPlayer {
      *
      * @return {Array<AudioClip> | null}
      */
-    public getAudioClipList(): Array<string> | null {
+    public getAudioClipList(): Array<string>|null {
         return this.listAudioClip;
     }
 
@@ -132,30 +137,27 @@ export class AudioPlayer {
         let richEmbedMessage: EmbedRichMessage;
         richEmbedMessage = new EmbedRichMessage();
 
-        // Set a troll color.
-        richEmbedMessage.setColor("BLURPLE");
-
-        // Add a field asking who the fuck had the balls to disconnect the bot.
-        richEmbedMessage.addFields([
+        richEmbedMessage.addCustomEmbedField([
             {
                 "name": 'Audio was skipped successfully !',
                 "value": `Skipped: ${this.currentAudioClip?.audioTitle}`,
                 "inline": true
             }
-        ]);
+        ], 'BLURPLE');
 
         // Send the embed meme message to the channel where the command was invoked.
         this.receivedMessage?.channel.send(richEmbedMessage);
 
         this.currentDispatcher?.end();
     }
+
     /**
      * This will make the bot join the user channel
      *
-     * @param message - The message sent by the user, that we will use to redirect our bot to the user channel.
-     * @param clipUrl - The clip that we want to play.
+     * @param {Message|null} message - The message sent by the user, that we will use to redirect our bot to the user channel.
+     * @param {string} clipUrl - The clip that we want to play.
      */
-    public handle(message: Message|null, clipUrl: string) {
+    public handle(message: Message|null, clipUrl: string): void {
         this.receivedMessage = message;
 
         this.handleAudioPlay(clipUrl);
@@ -164,7 +166,7 @@ export class AudioPlayer {
     /**
      * We process the given url and transform it into a AudioClip that we can check if the audio is valid before making the bot join.
      *
-     * @param audioUrl - The audio url that we want to process
+     * @param {string} audioUrl - The audio url that we want to process
      * @return {Promise<AudioClip>}
      */
     public async processAudioUrl(audioUrl: string): Promise<AudioClip> {
@@ -201,7 +203,7 @@ export class AudioPlayer {
      *
      * @return {void}
      */
-    public dispatchNextAudio(): void {
+    private dispatchNextAudio(): void {
         this.currentDispatcher?.on('finish', () => {
             // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
             this.currentDispatcher?.destroy();
@@ -215,11 +217,11 @@ export class AudioPlayer {
             // If the nextAudio is not undefined or empty play it
             if (nextAudio) {
                 // Play the next audio.
-                this.handle(this.receivedMessage, nextAudio);
+                this.handleProcessAudioUrl(nextAudio);
             } else {
                 this.inactivityTimeoutId = setTimeout(() => {
                     this.currentConnection?.disconnect();
-                }, 15 * 60 * 30);
+                }, 15 * 60 * 60);
             }
         });
     }
@@ -227,32 +229,29 @@ export class AudioPlayer {
     /**
      * Adds a url or a youtube clip to the list and will try to play it, it is the jukebox q:list
      *
+     * @param {AudioClip} audioClip
+     * @param {boolean} showAddedAudioMessage
      * @return {void}
-     * @param audioClip
      */
-    public addAudioToList(audioClip: AudioClip): void {
+    public addAudioToList(audioClip: AudioClip, showAddedAudioMessage: boolean): void {
         this.clearTimeout();
 
         if (audioClip.audioUrl) {
             this.listAudioClip.push(audioClip.audioUrl);
 
-            let richEmbedMessage: EmbedRichMessage;
-            richEmbedMessage = new EmbedRichMessage();
+            if (showAddedAudioMessage) {
+                let richEmbedMessage: EmbedRichMessage;
+                richEmbedMessage = new EmbedRichMessage();
 
-            // Set a troll color.
-            richEmbedMessage.setColor("BLURPLE");
-
-            // Add a field asking who the fuck had the balls to disconnect the bot.
-            richEmbedMessage.addFields([
-                {
+                richEmbedMessage.addCustomEmbedField([{
                     "name": 'A audio  was successfully added to the list.',
                     "value": audioClip.audioTitle,
                     "inline": true
-                }
-            ]);
+                }], 'BLURPLE');
 
-            // Send the embed meme message to the channel where the command was invoked.
-            this.receivedMessage?.channel.send(richEmbedMessage);
+                // Send the embed meme message to the channel where the command was invoked.
+                this.receivedMessage?.channel.send(richEmbedMessage);
+            }
         }
     }
 
@@ -308,17 +307,13 @@ export class AudioPlayer {
                 let richEmbedMessage: EmbedRichMessage;
                 richEmbedMessage = new EmbedRichMessage();
 
-                // Set a troll color.
-                richEmbedMessage.setColor("DARK_VIVID_PINK");
-
-                // Add a field asking who the fuck had the balls to disconnect the bot.
-                richEmbedMessage.addFields([
+                richEmbedMessage.addCustomEmbedField([
                     {
                         "name": 'WHO THE FUCK DARED TO DISCONNECT ME!!!',
                         "value": 'There will be consequences to your action boy.',
                         "inline": true
                     }
-                ]);
+                ], 'DARK_VIVID_PINK');
 
                 // Send the embed meme message to the channel where the command was invoked.
                 this.receivedMessage?.channel.send(richEmbedMessage);
@@ -343,28 +338,58 @@ export class AudioPlayer {
      * Handle the audio play, were we process the clip url and play the audio.
      * It also handle another bunch of shit but I am not paid to tell you what so figure it out.
      *
-     * @param clipUrl - The clip url to play.
+     * @param {string} clipUrl - The clip url to play.
      * @return {void}
      */
     private handleAudioPlay(clipUrl: string): void {
-        this.processAudioUrl(clipUrl).then((audioClip: AudioClip) => {
-            if (audioClip.audioTitle) {
-                if (this.isPlaying) {
-                    this.addAudioToList(audioClip);
-                } else {
-                    this.playAudio(audioClip);
+        youtubePlaylist(clipUrl).then(async (result: Result) => {
+            let richEmbedMessage: EmbedRichMessage;
+            richEmbedMessage = new EmbedRichMessage();
+
+            richEmbedMessage.addCustomEmbedField([
+                {
+                    "name": `A new playlist was added to the queue. ${result.estimatedItemCount} new audio added !`,
+                    "value": `Playlist: ${result.title}`,
+                    "inline": true
                 }
+            ], 'BLURPLE');
+
+            this.receivedMessage?.channel.send(richEmbedMessage);
+
+            for (const item of result.items) {
+                await this.handleProcessAudioUrl(item.shortUrl, false);
             }
         })
-            .catch((err: string) => {
-                return this.receivedMessage?.channel.send(err);
-            });
+            .catch(async (_err: string) => {
+                await this.handleProcessAudioUrl(clipUrl);
+            })
+    }
+
+    /**
+     * We receive a url that we want to process, meaning should we add it to the list or play it.
+     *
+     * @param {string} url
+     * @param {boolean} showAddedAudioMessage
+     * @return {Promise<void>}
+     */
+    private async handleProcessAudioUrl(url: string, showAddedAudioMessage: boolean = true): Promise<void> {
+        let audioClip: AudioClip;
+
+        audioClip = await this.processAudioUrl(url);
+
+        if (audioClip.audioTitle) {
+            if (this.isPlaying) {
+                this.addAudioToList(audioClip, showAddedAudioMessage);
+            } else {
+                this.playAudio(audioClip);
+            }
+        }
     }
 
     /**
      * Makes the bot play an audio in the user's channel.
      *
-     * @param audioClip
+     * @param {AudioClip} audioClip
      * @return {void}
      */
     private playAudio(audioClip: AudioClip): void {
@@ -383,15 +408,13 @@ export class AudioPlayer {
             // Rich embed message that we will send, to indicate what is currently playing.
             richEmbedMessage = new EmbedRichMessage();
 
-            richEmbedMessage.setColor("ORANGE");
-
-            richEmbedMessage.addFields([
+            richEmbedMessage.addCustomEmbedField([
                 {
                     "name": "Now playing",
                     "value": audioClip.audioTitle,
                     "inline": true
                 }
-            ]);
+            ], 'ORANGE');
 
             // Do nothing with the .then, it only useful to suppress the ts lint. Displays the current audio title.
             this.receivedMessage?.channel.send(richEmbedMessage);

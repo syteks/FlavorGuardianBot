@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedField, MessageEmbed } from "discord.js";
 import { MessageButton } from "../../interfaces/message-button";
 
 export class EmbedRichMessage extends MessageEmbed {
@@ -12,9 +12,9 @@ export class EmbedRichMessage extends MessageEmbed {
     /**
      * This function will add information about the bot prefix.
      *
-     * @param atBeginning - Should we add the information at the beginning of our embed message or at the end?
+     * @param {boolean} atBeginning - Should we add the information at the beginning of our embed message or at the end?
      */
-    public addBotPrefixField(atBeginning: boolean = true) {
+    public addBotPrefixField(atBeginning: boolean = true): void {
         if (atBeginning) {
             this.fields?.unshift({
                 "name": `The bot's prefix (${process.env.BOT_COMMAND_PREFIX})`,
@@ -35,10 +35,22 @@ export class EmbedRichMessage extends MessageEmbed {
      *
      * @param embedMessageButton - This will contain the information about the button.
      */
-    public addButton(embedMessageButton: MessageButton) {
+    public addButton(embedMessageButton: MessageButton): void {
         if (embedMessageButton.custom_id && embedMessageButton.label) {
             this.buttons.push(embedMessageButton);
         }
+    }
+
+    /**
+     * Add a custom embed field with a given color.
+     *
+     * @param {Array<EmbedField>} richEmbedFields
+     * @param {string} color
+     * @return {void}
+     */
+    public addCustomEmbedField(richEmbedFields: Array<EmbedField>, color: string = 'RANDOM'): void {
+        this.setColor(color);
+        this.addFields(richEmbedFields);
     }
 
     /**
