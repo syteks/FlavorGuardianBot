@@ -24,6 +24,8 @@ import { Leave } from "../commands/audio-player/leave";
 import { Clear } from "../commands/audio-player/clear";
 import { Resume } from "../commands/audio-player/resume";
 import { Next } from "../commands/audio-player/next";
+import { Player } from "../classes/audio-player/player";
+import { List } from "../classes/audio-player/list";
 
 let container = new Container();
 let client = new Client();
@@ -53,11 +55,12 @@ container.bind<Next>(TYPES.Next).to(Next).inSingletonScope();
 container.bind<Leave>(TYPES.Leave).to(Leave).inSingletonScope();
 container.bind<Clear>(TYPES.Clear).to(Clear).inSingletonScope();
 
-
 // Service related binding
 container.bind<MemeService>(TYPES.MemeService).to(MemeService);
 container.bind<MongoDBClient>(TYPES.MongoDBClient).to(MongoDBClient).inSingletonScope();
 container.bind<AudioPlayer>(TYPES.AudioPlayer).to(AudioPlayer).inSingletonScope();
+container.bind<Player>(TYPES.Player).to(Player).inSingletonScope();
+container.bind<List>(TYPES.List).to(List).inSingletonScope();
 
 // Button related handlers
 container.bind<MoreGetMemes>(TYPES.MoreGetMemes).to(MoreGetMemes).inSingletonScope();

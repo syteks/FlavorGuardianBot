@@ -32,6 +32,8 @@ export const TYPES = {
     MemeService: Symbol("MemeService"),
     MongoDBClient: Symbol('MongoDBClient'),
     AudioPlayer: Symbol("AudioPlayer"),
+    Player: Symbol("Player"),
+    List: Symbol("List"),
 
     // ButtonsHandler
     MoreGetMemes: Symbol("MoreGetMemes"),

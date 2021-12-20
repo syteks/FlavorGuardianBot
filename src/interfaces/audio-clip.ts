@@ -14,5 +14,10 @@ export interface AudioClip {
     /**
      * Contains the playable audio.
      */
-    audio: Readable
+    audio: Readable,
+
+    /**
+     * Contains the timestamp of the video.
+     */
+    duration: string,
 }

@@ -34,7 +34,7 @@
         "mongodb": "^3.6.4",
         "opusscript": "^0.0.8",
         "reflect-metadata": "^0.1.13",
-        "ytdl-core": "^4.9.1",
+        "ytdl-core": "^4.9.2",
         "ytpl": "^2.2.3"
     },
     "devDependencies": {
