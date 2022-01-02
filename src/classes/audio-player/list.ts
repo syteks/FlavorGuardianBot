@@ -23,12 +23,7 @@ export class List {
     }
 
     public next(): AudioClip|null {
-        let audioClip: AudioClip|null;
-        audioClip = this.getAudioClip();
-
-        this.currentIndex++;
-
-        return audioClip;
+        return this.getAudioClip();
     }
 
     public clear(): List {
@@ -116,7 +111,8 @@ export class List {
     public isStart(): boolean {
         return this.currentIndex === 0;
     }
+
     private getAudioClip(): AudioClip|null {
-        return this.list[this.currentIndex] ?? null;
+        return this.list.shift() ?? null;
     }
 }

@@ -18,6 +18,7 @@ export class Player {
 
     @inject(TYPES.List)
     private audioList!: List;
+
     private currentConnection: VoiceConnection|null;
     private currentAudioClip: AudioClip|null;
     private isPlaying: boolean;
@@ -49,10 +50,7 @@ export class Player {
     }
 
     public async play(url: string, message: Message|null): Promise<void> {
-        if (!this.message) {
-            this.message = message;
-        }
-
+        this.message = message;
         await this.processUrl(url);
     }
     public clear(): void {
@@ -132,10 +130,10 @@ export class Player {
                     this.audioList.add(audioClip);
                 }
 
-                if (!this.isPlaying) {
+                if (this.isPlaying) {
                     this.message?.channel.send(this.audioList.getNewAudioAddedToTheListEmbed(audioClip));
                 }
-            }).finally(() => {
+
                 if (!this.isPlaying) {
                     this.startPlayer(this.audioList.next());
                 }
@@ -235,7 +233,7 @@ export class Player {
 
             // Get the next video to play from the list
             const nextAudio = this.audioList.next();
-            console.log('nextAudio', nextAudio?.audio);
+
             // If the nextAudio is not undefined or empty play it
             if (nextAudio) {
                 // Play the next audio.
