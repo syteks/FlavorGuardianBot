@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { Message, StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
 import youtubePlaylist, { Result } from "ytpl";
 import youtubePlayer, { videoInfo } from "ytdl-core";
 import { List } from "./list";
@@ -23,6 +23,7 @@ export class Player {
     private currentAudioClip: AudioClip|null;
     private isPlaying: boolean;
     private currentDispatcher: StreamDispatcher|null;
+    private voiceChannel: VoiceChannel|null;
 
     private cookiesObject: Object = {
         requestOptions: {
@@ -42,6 +43,7 @@ export class Player {
 
     constructor() {
         this.message = null;
+        this.voiceChannel = null;
         this.currentAudioClip = null;
         this.currentConnection = null;
         this.currentDispatcher = null;
@@ -51,11 +53,19 @@ export class Player {
 
     public async play(url: string, message: Message|null): Promise<void> {
         this.message = message;
+
+        if (this.voiceChannel === null) {
+            this.voiceChannel = this.message?.member?.voice.channel ?? null;
+        }
+
         await this.processUrl(url);
     }
+
     public clear(): void {
         this.audioList.clear();
+        this.voiceChannel = null;
     }
+
     public disconnect(): void {
         this.isPlaying = false;
 
@@ -194,7 +204,7 @@ export class Player {
             return Promise.reject("The given clip was empty.");
         }
 
-        this.message?.member?.voice.channel?.join().then((connection: VoiceConnection) => {
+        this.voiceChannel?.join().then((connection: VoiceConnection) => {
             this.currentConnection = connection;
 
             this.currentAudioClip = audioClip;
