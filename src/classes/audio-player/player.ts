@@ -157,19 +157,16 @@ export class Player {
 
         this.message?.channel.send(this.audioList.getNewPlayListAddedEmbed(result.title, result.items.length));
 
-        let counter = 0;
-
         for (const item of result.items) {
             let audioClip = await this.processAudioUrl(item.shortUrl);
 
             this.audioList.add(audioClip, insertToIndex);
 
-            if (!counter && audioClip) {
-                this.startPlayer(this.audioList.next());
-                counter++;
-            }
-
             insertToIndex++;
+
+            if (!this.isPlaying && audioClip) {
+                this.startPlayer(this.audioList.next()).then(() => this.isPlaying = true);
+            }
         }
 
         this.audioList.clearEmpty();
