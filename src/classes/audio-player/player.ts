@@ -63,11 +63,11 @@ export class Player {
 
     public clear(): void {
         this.audioList.clear();
-        this.voiceChannel = null;
     }
 
     public disconnect(): void {
         this.isPlaying = false;
+        this.voiceChannel = null;
 
         this.clear();
 
