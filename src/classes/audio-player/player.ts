@@ -247,6 +247,7 @@ export class Player {
                 this.startPlayer(nextAudio);
             } else {
                 this.inactivityTimeoutId = setTimeout(() => {
+                    this.voiceChannel = null;
                     this.currentConnection?.disconnect();
                 }, 15 * 60 * 60);
             }
