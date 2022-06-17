@@ -9,7 +9,7 @@ export class List {
      *
      * @var {Array<AudioClip>|null}
      */
-    private list: Array<AudioClip|null>;
+    private list: Array<AudioClip|string|null>;
 
     private currentIndex: number;
 
@@ -18,11 +18,11 @@ export class List {
         this.currentIndex = 0;
     }
 
-    public getList(): Array<AudioClip|null> {
+    public getList(): Array<AudioClip|string|null> {
         return this.list;
     }
 
-    public next(): AudioClip|null {
+    public next(): AudioClip|string|null {
         return this.getAudioClip();
     }
 
@@ -32,7 +32,7 @@ export class List {
         return this;
     }
 
-    public add(audioClip: AudioClip|null, index: number|null = null): List {
+    public add(audioClip: AudioClip|string|null, index: number|null = null): List {
         if (audioClip) {
             if (index === null) {
                 this.list.push(audioClip);
@@ -65,13 +65,13 @@ export class List {
         return richEmbedMessage;
     }
 
-    public getNewAudioAddedToTheListEmbed(audioClip: AudioClip): EmbedRichMessage {
+    public getNewAudioAddedToTheListEmbed(audioClipTitle: string): EmbedRichMessage {
         let richEmbedMessage: EmbedRichMessage;
         richEmbedMessage = new EmbedRichMessage();
 
         richEmbedMessage.addCustomEmbedField([{
             "name": 'A audio  was successfully added to the list.',
-            "value": audioClip.audioTitle,
+            "value": audioClipTitle,
             "inline": true
         }], 'BLURPLE');
 
@@ -79,7 +79,7 @@ export class List {
     }
 
     public clearEmpty(): List {
-        this.list = this.list.filter((audioClip: AudioClip|null) => audioClip !== null);
+        this.list = this.list.filter((audioClip: AudioClip|string|null) => audioClip !== null);
 
         return this;
     }
@@ -112,7 +112,7 @@ export class List {
         return this.currentIndex === 0;
     }
 
-    private getAudioClip(): AudioClip|null {
+    private getAudioClip(): AudioClip|string|null {
         return this.list.shift() ?? null;
     }
 }

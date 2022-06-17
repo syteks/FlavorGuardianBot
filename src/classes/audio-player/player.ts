@@ -16,15 +16,47 @@ export class Player {
      */
     private message: Message|null;
 
+    /**
+     * The audio list for the jukebox basically our Q.
+     * @type {List}
+     */
     @inject(TYPES.List)
     private audioList!: List;
 
+    /**
+     * The voice connection of the bot.
+     * @type {VoiceConnection | null}
+     */
     private currentConnection: VoiceConnection|null;
+
+    /**
+     * The current audio clip that is playing.
+     * @type {AudioClip | null}
+     */
     private currentAudioClip: AudioClip|null;
+
+    /**
+     * Boolean to indicate if the bot is playing.
+     * @type {boolean}
+     */
     private isPlaying: boolean;
+
+    /**
+     * The current streaming dispatcher, the dispatcher playing the audio.
+     * @type {StreamDispatcher | null}
+     */
     private currentDispatcher: StreamDispatcher|null;
+
+    /**
+     * The first voice channel that the bot joined, this helps us keep the bot in one place after the end of each song.
+     * @type {VoiceChannel | null}
+     */
     private voiceChannel: VoiceChannel|null;
 
+    /**
+     * The cookies for the youtube calls.
+     * @type {Object}
+     */
     private cookiesObject: Object = {
         requestOptions: {
             headers: {
@@ -36,11 +68,14 @@ export class Player {
 
     /**
      * Keeps the inactivity timer.
-     *
      * @var {Timeout|number|null}
      */
     private inactivityTimeoutId: Timeout|number|null;
 
+    /**
+     * Class constructor
+     * @returns void
+     */
     constructor() {
         this.message = null;
         this.voiceChannel = null;
@@ -51,6 +86,12 @@ export class Player {
         this.isPlaying = false;
     }
 
+    /**
+     * This function will be used to initiate the jukebox.
+     * @param {string} url
+     * @param {Message | null} message
+     * @return {Promise<void>}
+     */
     public async play(url: string, message: Message|null): Promise<void> {
         this.message = message;
 
@@ -58,13 +99,25 @@ export class Player {
             this.voiceChannel = this.message?.member?.voice.channel ?? null;
         }
 
-        await this.processUrl(url);
+        try {
+            await this.processUrl(url);
+        } catch (exception) {
+            console.log(exception);
+        }
     }
 
+    /**
+     * Clear the list Q.
+     * @returns void
+     */
     public clear(): void {
         this.audioList.clear();
     }
 
+    /**
+     * Disconnect the bot from the channel and clear the List Q.
+     * @returns void
+     */
     public disconnect(): void {
         this.isPlaying = false;
         this.voiceChannel = null;
@@ -77,7 +130,6 @@ export class Player {
 
     /**
      * Plays the next audio.
-     *
      * @return {void}
      */
     public nextAudio(): void {
@@ -111,7 +163,6 @@ export class Player {
 
     /**
      * Pauses the current played audio.
-     *
      * @return {void}
      */
     public pauseAudio(): void {
@@ -120,36 +171,46 @@ export class Player {
 
     /**
      * Resumes the current played audio.
-     *
      * @return {void}
      */
     public resumeAudio(): void {
         this.currentDispatcher?.resume();
     }
 
+    /**
+     * Process the given url, we check if it is a single Audio url or a Playlist url.
+     * @param {string} url
+     * @return {Promise<void>}
+     * @returns void
+     */
     private async processUrl(url: string): Promise<void> {
         youtubePlaylist(url)
             .then(async (result: Result) => {
-                await this.processPlayListResult(result);
+                await this.processPlayListResult(result).catch(() => console.log('Failed processing url.'));
             })
             .catch(async (_err: string) => {
-                let audioClip: AudioClip;
-                audioClip = await this.processAudioUrl(url);
-
-                if (audioClip) {
-                    this.audioList.add(audioClip);
-                }
-
-                if (this.isPlaying) {
-                    this.message?.channel.send(this.audioList.getNewAudioAddedToTheListEmbed(audioClip));
+                if (url) {
+                    this.audioList.add(url);
                 }
 
                 if (!this.isPlaying) {
-                    this.startPlayer(this.audioList.next());
+                    await this.startPlayer(this.audioList.next());
+                } else {
+                    await youtubePlayer.getInfo(url + '&bpctr=9999999999', this.cookiesObject)
+                        .then((result: videoInfo) => {
+                            this.message?.channel.send(this.audioList.getNewAudioAddedToTheListEmbed(result.videoDetails.title));
+                        })
+                        .catch(err => console.log(err))
                 }
             });
     }
 
+    /**
+     * This will fetch all of the songs found in a playlist and process them by adding them to the Q.
+     * @param {Result} result
+     * @return {Promise<void>}
+     * @returns void
+     */
     private async processPlayListResult(result: Result): Promise<void> {
         let insertToIndex: number;
 
@@ -158,20 +219,26 @@ export class Player {
         this.message?.channel.send(this.audioList.getNewPlayListAddedEmbed(result.title, result.items.length));
 
         for (const item of result.items) {
-            let audioClip = await this.processAudioUrl(item.shortUrl);
-
-            this.audioList.add(audioClip, insertToIndex);
+            this.audioList.add(item.shortUrl, insertToIndex);
 
             insertToIndex++;
 
-            if (!this.isPlaying && audioClip) {
-                this.startPlayer(this.audioList.next()).then(() => this.isPlaying = true);
+            if (!this.isPlaying) {
+                await this.startPlayer(this.audioList.next())
+                    .then(() => this.isPlaying = true)
+                    .catch(() => this.isPlaying = false)
             }
         }
 
         this.audioList.clearEmpty();
     }
 
+    /**
+     * This function will process the given message URL, meaning we will go and fetch the right bitrate player for each given url.
+     * @param {string} url
+     * @return {Promise<AudioClip>}
+     * @returns void
+     */
     private async processAudioUrl(url: string): Promise<AudioClip> {
         let audioBasicInfo: videoInfo|void;
         let audioClip: AudioClip;
@@ -196,31 +263,49 @@ export class Player {
         return Promise.reject('The audio URL is not valid or doesn\'t exists.')
     }
 
-    private async startPlayer(audioClip: AudioClip|null): Promise<void> {
+    /**
+     * Start the player, means that we initiate a bot joining the channel and play a given audio clip.
+     * @param {AudioClip | null} audioClip
+     * @return {Promise<void>}
+     * @returns void
+     */
+    private async startPlayer(audioClip: AudioClip|string|null): Promise<void> {
+        if (typeof audioClip === "string") {
+            try {
+                audioClip = await this.processAudioUrl(audioClip);
+            } catch (exception) {
+                audioClip = null;
+                console.log(exception);
+            }
+        }
+
         if (!audioClip) {
             return Promise.reject("The given clip was empty.");
         }
 
+        let foundAudioClip: AudioClip;
+        foundAudioClip = audioClip;
+
         this.voiceChannel?.join().then((connection: VoiceConnection) => {
+            this.isPlaying = true;
+
             this.currentConnection = connection;
 
-            this.currentAudioClip = audioClip;
-
-            this.isPlaying = true;
+            this.currentAudioClip = foundAudioClip;
 
             this.clearTimeout();
 
             this.sendCurrentPlayingAudio();
 
             // Keep the connection in a dispatcher to know when the bot is done outputting stream.
-            this.currentDispatcher = this.currentConnection?.play(audioClip.audio, {volume: 0.25});
+            this.currentDispatcher = this.currentConnection?.play(this.currentAudioClip.audio, {volume: 0.25});
 
             return this.startAudioDispatcher();
         });
     }
+
     /**
      * Clear the inactivity timeout if it has a set value.
-     *
      * @return {void}
      */
     private clearTimeout(): void {
@@ -230,6 +315,11 @@ export class Player {
         this.inactivityTimeoutId = null;
     }
 
+    /**
+     * Start the audio dispatcher, which will get triggered everytime a song is finished.
+     * Triggers to play the next audio in the playlist if possible.
+     * @returns void
+     */
     private startAudioDispatcher(): void {
         this.currentDispatcher?.on('finish', () => {
             // Destroy the stream/dispatcher, so we do not use resource for nothing and it doesn't interrupt the audio of currently playing audio.
@@ -254,6 +344,10 @@ export class Player {
         });
     }
 
+    /**
+     * Send a message saying which song title is currently Playing.
+     * @returns void
+     */
     private sendCurrentPlayingAudio(): void {
         if (this.currentAudioClip) {
             // The dispatcher that will play the audio and close the connection when it done
