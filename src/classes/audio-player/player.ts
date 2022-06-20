@@ -275,6 +275,9 @@ export class Player {
                 audioClip = await this.processAudioUrl(audioClip);
             } catch (exception) {
                 audioClip = null;
+                if (! this.audioList.isEnd()) {
+                    this.startPlayer(this.audioList.next());
+                }
                 console.log(exception);
             }
         }

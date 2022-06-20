@@ -57,6 +57,12 @@ export class EmbedRichMessage extends MessageEmbed {
      * We will be using this function in order to send a message with the buttons or a custom component.
      */
     public toObject() {
+        if (! this.buttons.length) {
+            return {
+                embed: this
+            }
+        }
+
         return {
             embed: this,
             components: [

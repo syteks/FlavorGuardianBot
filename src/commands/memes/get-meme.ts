@@ -97,7 +97,7 @@ export class GetMeme implements CommandHandler {
                 if (!Array.isArray(params)) {
                     clipUrl = params;
                 } else if (params.length === 0) {
-                    clipUrl = this.randomClip();
+                    return this.randomClip();
                 }
             }
 
@@ -110,12 +110,17 @@ export class GetMeme implements CommandHandler {
      *
      * @return {string}
      */
-    private randomClip(): string {
-        // Get a random number between 0 and the amount of clip found in the .json file
-        let randomClipNumber: number = Math.floor(Math.random() * memes.length);
+    private randomClip(): Promise<string> {
+        return this.memeService.getMemes().then((dbMemes: Meme[]) => {
+            if (! dbMemes.length) {
+                return '';
+            }
+            // Get a random number between 0 and the amount of clip found in the .json file
+            let randomClipNumber: number = Math.floor(Math.random() * dbMemes.length);
 
-        // Output the random clip
-        return this.memes[randomClipNumber].clip;
+            // Output the random clip
+            return dbMemes[randomClipNumber].clip;
+        })
     }
 
     /**
@@ -130,6 +135,9 @@ export class GetMeme implements CommandHandler {
         return this.getClipByParams(params).then((clipUrl: string) => {
             // Make sure the clip is found
             if (!clipUrl) {
+                if (params.length === 0) {
+                    return message.channel.send("Yo you have no memes saved.");
+                }
                 return message.channel.send("The given clip was not found.");
             }
 

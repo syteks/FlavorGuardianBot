@@ -67,12 +67,16 @@ export class Memes implements CommandHandler {
                 richEmbed.addField(meme.key, meme.clip, false);
             });
 
-            richEmbed.addButton({
-                type: 2,
-                label: "Next",
-                style: 1,
-                custom_id: "get_more_memes",
-            });
+            if (! memes.length) {
+                richEmbed.addField('Empty list', 'You have no memes saved fucking nerd.', false);
+            } else {
+                richEmbed.addButton({
+                    type: 2,
+                    label: "Next",
+                    style: 1,
+                    custom_id: "get_more_memes",
+                });
+            }
 
             message.channel.send(richEmbed.toObject()).then((embedMessageSent: Message) => {
                 // The message that is sent back as a reply.
