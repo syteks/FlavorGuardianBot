@@ -54,13 +54,13 @@ export class Player {
     private voiceChannel: VoiceChannel|null;
 
     /**
-     * The cookies for the youtube calls.
+     * The cookies for the YouTube calls.
      * @type {Object}
      */
     private cookiesObject: Object = {
         requestOptions: {
             headers: {
-                Cookie: 'VISITOR_INFO1_LIVE=umVXV2-me7s;__Secure-3PSID=EwjRullhSJJnsccAhSZ3PZeOYcoZ08e9hZM65bM322DsmeLi6AW5Rjfof2m_c3yzdDjMXQ.;__Secure-3PAPISID=HefM9btYKIEYVXzr/AHUVv4PhPXCygaqoQ;LOGIN_INFO=AFmmF2swRQIhANSeQ9uDyGaEfq_eZRMtq5Zv30ZqyqEloH7Zn8GvN9tQAiBlvgcrstXx02HEyXQFB-anauemYoBCGfIyy38gJunALg:QUQ3MjNmd2d1aF9iSWV5QUJPTndCaXBOWGZYNU5vOXFhbENyZFpzVzV3QTI0S3JDQ0tzNVhGenMyY0tSa2dlWlgyc0tTcDNITGFjRUtlSFZrTTRVYld6ODgyZDdGQzhkeW9Ybk9LYXJSenEtSG5mQU92OUpnNnRwRXp4OVk3d3lKZ2FublVuUkR3LVFMaDJ0SXUtRHBaQVU1cUZ0VTdaRk1n; PREF=tz=America.Toronto&f6=400;__Secure-3PSIDCC=AJi4QfEfkJrwYU9W7_8rQf5TwUqt7D95ffZZFXi1jytiLdg_4JdpqgzsMui5CeCNxPibU9aR;',
+                Cookie: '__Secure-3PSIDCC=AFvIBn9HGjm_9h9IUWVVqjtN8oGZ1egL6wR-6kxl1F4nPz8NvQUGiQNLFGaymvHuLn-T9xX7DvU;__Secure-1PSIDCC=AFvIBn9pEntviqxQYuNP_s0KFfZAKYreYk_aonMpXrNoK9Ju6hzMQLc4Fe511bf01L32nzV3;__Secure-3PAPISID=bOJKZZbt1OC-HMf5/A22Lfuiv2pE7arBoz;__Secure-1PAPISID=bOJKZZbt1OC-HMf5/A22Lfuiv2pE7arBoz;__Secure-1PSID=UQjRut_Djskt3UVCyo_ocL7xnnwfy_QXNnnIdS_68X-z7syFXtx31_7nmsyj43gGf_QTLw.;SAPISID=bOJKZZbt1OC-HMf5/A22Lfuiv2pE7arBoz;__Secure-3PSID=UQjRut_Djskt3UVCyo_ocL7xnnwfy_QXNnnIdS_68X-z7syF2PGDX_jekHiPBTvLf__8KA.;APISID=MTU0IvRuj7RvpULV/A8sPxEYKJcTas_yzH;SSID=AkwRfMER2obwCY7hD;SID=UQjRut_Djskt3UVCyo_ocL7xnnwfy_QXNnnIdS_68X-z7syFL7YcZrV9L1V3h2LoSpODoQ.;SIDCC=AFvIBn-kN1iTdB9R5UKo3EZe-h8DwhUa-w-iUlwzeySRNbzMrTfO9gk8UA-vdQQigUfAdb60RA;HSID=Ar--mRMC2KmY7y597;LOGIN_INFO=AFmmF2swRQIhAOvkhWh44Lb2aKdbXZop7_Hav3c6l-49bnWX7bbVirtCAiBnNBqtC94LjCvX5a3Mh72nokJHtkjGNdpwRPc3MlQTlg:QUQ3MjNmeVhOT1NGRnRmOFNfQWZCR3ZMNGVGUzUyamx1OE85elhSZ2V6VkhBbVAxS3NrQ0cxd2hhZjhkNW1TU201dWNRUHhsYmVpeC1tdFNVNEppb0ZJVDI3OGZBTjdQckUyZzYzMTdqTHlBN0RfcE1BRlA3VmUtMV9lLWpkaEQwdjh1OHR0d2FiNlIycHk3U1hRVmVtOFhpUTM3UDc4Wkdn;PREF=tz=America.Toronto&f6=40000000&f7=100;VISITOR_INFO1_LIVE=EAWTiAEo4Cs;YSC=PHwHQ7Y7d8c;',
                 'x-youtube-identity-token': "QUFFLUhqazFCWDBKdGpVMTRKX1Roc0Z6YzNKdlJ0ZW90UXw\u003d"
             }
         }
