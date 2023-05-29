@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
-import { CommandObject } from "../../../interfaces";
 import { Message } from "discord.js";
-import { TYPES } from "../../../types";
-import { MemeService } from "../../meme-service";
-import { Meme } from "../../../models/meme";
+import { TYPES } from "../../types";
+import { MemeService } from "../../services/memes/meme-service";
+import { CommandHandler } from "../../interfaces/command-handler";
+import { Meme } from "../../models/meme";
 
 @injectable()
-export class DeleteMeme implements CommandObject {
+export class DeleteMeme implements CommandHandler {
     /**
      * Regex for this command
      */
@@ -20,7 +20,7 @@ export class DeleteMeme implements CommandObject {
     private memeService: MemeService;
 
     /**
-     * Initialize the command class, that will process your mom before outputting it into a soundtrack, sike she was too fat to process!
+     * Initialize the command classes, that will process your mom before outputting it into a soundtrack, sike she was too fat to process!
      *
      * @param memeService - This will contain our connection to our data base that we can use to make action to the database.
      */
@@ -34,22 +34,24 @@ export class DeleteMeme implements CommandObject {
      *
      * @param message - The Message of the user
      * @param commandParameters - A string that contains the parameters to the command
-     * @returns {Promise<Message | Message[]>}
+     * @return {Promise<Message | Message[]>}
      */
     public action(message: Message, commandParameters: string[]): Promise<Message | Message[]> {
         // Return a message to indicate that the parameter(s) doesn't pass the validator
         if (commandParameters.length > 1 || !commandParameters[0]) {
-            return message.reply(`Expected 1 parameter, ${commandParameters.length} parameters given`);
+            return message.channel.send(`Expected 1 parameter, ${commandParameters.length} parameters given`);
         }
 
         // Check if the meme exists and delete it, if the meme doesn't exist outputs a error message
         return this.memeService.getMemeByKey(commandParameters[0]).then((existingMeme: Meme) => {
             // The meme that we want to delete doesn't exist
             if (!existingMeme) {
-                return message.reply(`There is no meme associated with the given key "${commandParameters[0]}"`);
+                return message.channel.send(`There is no meme associated with the given key "${commandParameters[0]}"`);
             }
 
-            this.memeService.deleteMeme(existingMeme._id || '');
+            this.memeService.deleteMeme(existingMeme._id || '').then(() => {
+                return message.channel.send(`The meme with the key "${existingMeme.key}" was successfully deleted.`);
+            });
 
             return Promise.resolve(message);
         });

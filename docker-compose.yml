@@ -21,7 +21,8 @@ services:
   memory:
     container_name: flavor-guardian-memory
     restart: unless-stopped
-    image: mongo:4
+    image: mongo:5.0
+    command: mongod --quiet --logpath /dev/null
     ports:
       - "27017:27017"
     environment:
@@ -39,7 +40,7 @@ services:
       interval: 5s
       start_period: 10s
       timeout: 4s
-      retries: 3
+      retries: 10
 
 networks:
   bot-network:

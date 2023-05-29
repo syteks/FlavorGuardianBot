@@ -1,4 +1,4 @@
-FROM node:14.15.4-alpine
+FROM node:19-alpine
 
 LABEL Maintainer="Andrew H. <andrewgmholmes@gmail.com>" \
       Description="Flavor Guardian Bot" \
