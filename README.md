@@ -1,3 +1,5 @@
+# DEPRECATED
+## Due to lack of funds and time, this project is not maintained anymore.
 # FlavorGuardianBot
 The ultimate Flavor Guardian
 
